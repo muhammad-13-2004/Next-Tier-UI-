@@ -1,10 +1,12 @@
-import './App.css'
+import Hero from "./components/Hero"
+import Navbar from "./components/Navbar"
+
 
 function App() {
-
   return (
     <>
-      <h1 className='text-6xl'>Setup React Project</h1>
+    <Navbar />
+    <Hero />
     </>
   )
 }
