@@ -1,41 +1,58 @@
-import React from 'react'
+import LeftArrow from '../assets/LeftArrow.png'
 
 const Hero = () => {
   return (
-    <section className="w-full h-full bg-white text-black ">
-      <div className="w-[1248px] h-[632px] bg-[#D9D9D9]">
-        <h1 className="text-7xl font-medium">
-          Confused About What To <br />
-          <span className="bg-[#8EE14A] text-white">Learn</span> Next?
+    <section className="w-full min-h-screen flex items-center justify-center bg-white relative overflow-hidden">
+      {/* Grid Background */}
+      <div
+        className="absolute inset-0 opacity-40 
+  bg-[linear-gradient(#e5e5e5_1px,transparent_1px),linear-gradient(90deg,#e5e5e5_1px,transparent_1px)] 
+  bg-[size:40px_40px]"
+        style={{
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent, black 20%, black 80%, transparent)',
+          maskImage:
+            'linear-gradient(to right, transparent, black 20%, black 80%, transparent)',
+        }}
+      ></div>
+
+      {/* Arrow Placeholder */}
+      <img
+        src={LeftArrow}
+        alt="arrow"
+        className="absolute left-16 top-40 opacity-40"
+      />
+
+      <div className="relative text-center max-w-5xl px-6">
+        <h1 className="text-7xl font-medium leading-tight">
+          Confused About What To{' '}
+          <span className="bg-[#B2FF72] text-white  px-4 py-1 rounded-lg">
+            Learn
+          </span>{' '}
+          Next?
         </h1>
-        <p className="font-light">
+
+        <p className="text-gray-500 mt-6 text-lg font-light">
           Stop Jumping Between Random Tutorials. Get A Structured Path Designed
-          For your skill level and career goals.
+          For Your Skill Level And Career Goals.
         </p>
-        <div className="font-light">
-          <button className="w-[180px] h-[40px] bg-black text-white rounded-[40px]">
+
+        {/* Buttons */}
+        <div className="flex justify-center gap-4 mt-8">
+          <button className="bg-[#B2FF72] px-6 py-3 rounded-lg font-light hover:scale-105 transition">
             Build My Roadmap
           </button>
-          <button className="w-[180px] h-[40px] bg-white text-black rounded-[40px]">
+
+          <button className="border border-gray-300 px-6 py-3 rounded-lg font-light hover:bg-gray-100 transition">
             Watch Demo
           </button>
         </div>
 
-        <div>
-          <div>
-            <span>50K+</span>
-            <span>Users</span>
-          </div>
-
-          <div>
-            <span>3K+</span>
-            <span>Daily SignUp</span>
-          </div>
-
-          <div>
-            <span>5+</span>
-            <span>Tools</span>
-          </div>
+        {/* Features */}
+        <div className="flex justify-center gap-6 text-sm text-gray-600 mt-5 font-light">
+          <span>● No Credit Card</span>
+          <span>● 100% Free To Start</span>
+          <span>● Setup in less than 2 mins</span>
         </div>
       </div>
     </section>
