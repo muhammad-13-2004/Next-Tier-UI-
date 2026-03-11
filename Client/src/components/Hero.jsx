@@ -24,7 +24,7 @@ const Hero = () => {
       />
 
       <div className="relative text-center max-w-5xl px-6">
-        <h1 className="text-7xl font-medium leading-tight">
+        <h1 className="text-7xl font-medium leading-20">
           Confused About What To{' '}
           <span className="bg-[#B2FF72] text-white  px-4 py-1 rounded-lg">
             Learn

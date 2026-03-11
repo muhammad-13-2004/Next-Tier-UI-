@@ -1,5 +1,6 @@
 import Hero from "./components/Hero"
 import Navbar from "./components/Navbar"
+import Comments from "./components/Comments"
 
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <>
     <Navbar />
     <Hero />
+    <Comments />
     </>
   )
 }
