@@ -4,8 +4,7 @@ import Zap from '../assets/Zap.png'
 
 const Navbar = () => {
   return (
-    <div className="w-309.5 h-16.75 flex flex-row items-center justify-evenly">
-        
+    <div className="w-full h-16.75 flex flex-row items-center justify-evenly">
       <div className="w-[149px] h-[35px] ">
         <img src={LogoApp} alt="This is the logo of the webpage" />
       </div>
@@ -27,7 +26,6 @@ const Navbar = () => {
           />
         </button>
       </div>
-
     </div>
   )
 }
