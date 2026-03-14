@@ -20,7 +20,7 @@ const Hero = () => {
       <img
         src={LeftArrow}
         alt="arrow"
-        className="absolute left-16 top-40 opacity-40"
+        className="absolute left-16 top-40 opacity-100"
       />
 
       <div className="relative text-center max-w-5xl px-6">
