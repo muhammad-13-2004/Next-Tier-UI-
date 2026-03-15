@@ -6,8 +6,8 @@ const Hero = () => {
       {/* Grid Background */}
       <div
         className="absolute inset-0 opacity-40 
-  bg-[linear-gradient(#e5e5e5_1px,transparent_1px),linear-gradient(90deg,#e5e5e5_1px,transparent_1px)] 
-  bg-[size:40px_40px]"
+        bg-[linear-gradient(#e5e5e5_1px,transparent_1px),linear-gradient(90deg,#e5e5e5_1px,transparent_1px)] 
+        bg-[size:40px_40px]"
         style={{
           WebkitMaskImage:
             'linear-gradient(to right, transparent, black 20%, black 80%, transparent)',

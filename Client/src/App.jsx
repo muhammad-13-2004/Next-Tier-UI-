@@ -4,6 +4,7 @@ import Comments from "./components/Comments"
 import Steps from "./components/Steps"
 import Tools from "./components/Tools"
 import Faqs from "./components/Faqs"
+import Footer from "./components/Footer"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
     <Steps />
     <Tools />
     <Faqs />
+    <Footer />
     </>
   )
 }
