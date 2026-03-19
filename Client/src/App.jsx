@@ -1,21 +1,10 @@
-import Hero from "./components/Hero"
-import Navbar from "./components/Navbar"
-import Comments from "./components/Comments"
-import Steps from "./components/Steps"
-import Tools from "./components/Tools"
-import Faqs from "./components/Faqs"
-import Footer from "./components/Footer"
+import Main from "./pages/Main"
+import SignUp from "./pages/SignUp"
 
 function App() {
   return (
     <>
-    <Navbar />
-    <Hero />
-    <Comments />
-    <Steps />
-    <Tools />
-    <Faqs />
-    <Footer />
+    < SignUp />
     </>
   )
 }
