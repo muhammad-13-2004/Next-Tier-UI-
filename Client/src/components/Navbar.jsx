@@ -1,6 +1,7 @@
 import React from 'react'
 import LogoApp from '../assets/LogoApp.png'
 import Zap from '../assets/Zap.png'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
   return (
@@ -17,14 +18,16 @@ const Navbar = () => {
       </div>
 
       <div className="">
-        <button className="w-[125px] h-[35px] bg-black rounded-[40px] flex flex-row items-center justify-center">
-          <span className="font-light text-white ">Sign Up Free</span>
-          <img
-            src={Zap}
-            alt="zap.png"
-            style={{ width: '20px', height: '20px' }}
-          />
-        </button>
+        <Link to="/signup">
+          <button className="w-[125px] h-[35px] bg-black rounded-[40px] flex flex-row items-center justify-center">
+            <span className="font-light text-white ">Sign Up Free</span>
+            <img
+              src={Zap}
+              alt="zap.png"
+              style={{ width: '20px', height: '20px' }}
+            />
+          </button>
+        </Link>
       </div>
     </div>
   )

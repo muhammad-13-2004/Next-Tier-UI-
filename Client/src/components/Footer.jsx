@@ -1,6 +1,7 @@
 import React from 'react'
 import Zap from '../assets/Zap.png'
 import LogoApp from '../assets/LogoApp.png'
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -19,6 +20,7 @@ const Footer = () => {
           for <br />
           your skill level and career goals.
         </p>
+        <Link to="/signup">
         <button className="w-[195px] h-[50px] bg-black rounded-[40px] flex flex-row items-center justify-center p-5">
           <span className="font-light text-white ">Sign Up Free</span>
           <img
@@ -27,6 +29,7 @@ const Footer = () => {
             style={{ width: '20px', height: '20px' }}
           />
         </button>
+        </Link>
       </div>
 
       {/* footer */}
