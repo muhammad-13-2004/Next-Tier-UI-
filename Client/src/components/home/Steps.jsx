@@ -1,16 +1,16 @@
 import React from 'react'
-import star from '../assets/star.png'
+import { Hash } from 'lucide-react'
 
 const Steps = () => {
   return (
-    <section className="w-full flex items-center justify-center bg-white mt-20">
+    <section id='howitworks' className="w-full flex items-center justify-center bg-white mt-20">
       <div>
         <div className="flex flex-col items-center">
-          <span className="font-medium text-[14px] text-[#67D909] flex items-center justify-center gap-2">
-            <img src={star} alt="" />
+          <span className="font-medium text-[14px] text-[#67D909] flex items-center justify-center gap-1">
+            <Hash className='w-6 h-6'/>
             Get Started With Us!{' '}
           </span>
-          <h2 className="text-5xl font-medium">Its Easy As It Looks</h2>
+          <h2 className="text-[40px] font-medium">Its Easy As It Looks</h2>
         </div>
 
         <div className="flex flex-row w-full bg-white gap-4 mt-16">

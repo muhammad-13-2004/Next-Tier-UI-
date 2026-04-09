@@ -1,9 +1,9 @@
 import React from 'react'
-import star from '../assets/star.png'
+import star from '../../assets/star.png'
 
 const Faqs = () => {
   return (
-    <section className="bg-white w-full mt-20 flex items-center justify-center">
+    <section id='support' className="bg-white w-full mt-20 flex items-center justify-center">
       <div className="flex flex-col gap-16">
         <div className="flex flex-col items-center mt-10 gap-2 relative z-10">
           <span className="font-medium text-[14px] text-[#67D909] flex items-center justify-center gap-2">

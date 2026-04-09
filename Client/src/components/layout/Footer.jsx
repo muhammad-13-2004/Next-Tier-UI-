@@ -1,6 +1,6 @@
 import React from 'react'
-import Zap from '../assets/Zap.png'
-import LogoApp from '../assets/LogoApp.png'
+import Zap from '../../assets/Zap.png'
+import LogoApp from '../../assets/LogoApp.png'
 import { Link } from "react-router-dom";
 
 const Footer = () => {

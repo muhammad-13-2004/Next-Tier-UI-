@@ -1,9 +1,9 @@
 import React from 'react'
-import AuthForm from '../components/AuthForm'
-import Logo from '../assets/LogoApp.png'
-import Formpic from '../assets/signup.png'
+import AuthForm from '../../components/auth/AuthForm'
+import Logo from '../../assets/LogoApp.png'
+import Formpic from '../../assets/signup.png'
 
-const SignUp = () => {
+const Login = () => {
   return (
     <section className="bg-white w-screen h-screen flex justify-between overflow-hidden">
       {/* LEFT SIDE */}
@@ -11,7 +11,7 @@ const SignUp = () => {
         <img src={Logo} alt="logo" className="w-[120px] mb-10" />
 
         <div className="flex flex-1 items-center">
-          <AuthForm mode="signup" />
+          <AuthForm mode="login" />
         </div>
       </div>
 
@@ -27,4 +27,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default Login

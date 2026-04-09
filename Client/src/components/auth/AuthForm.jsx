@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { z } from 'zod'
-import social from '../assets/Social.png'
+import { email, z } from 'zod'
+import social from '../../assets/Social.png'
+import supabase from '@/services/supabase';
+import { useNavigate } from "react-router-dom";
 
 // Zod Schemas
 const signupSchema = z.object({
@@ -19,7 +21,9 @@ const loginSchema = z.object({
 })
 
 const AuthForm = ({ mode = 'signup' }) => {
+
   const isSignup = mode === 'signup'
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     firstName: '',
@@ -39,7 +43,8 @@ const AuthForm = ({ mode = 'signup' }) => {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
     e.preventDefault()
 
     const schema = isSignup ? signupSchema : loginSchema
@@ -52,10 +57,53 @@ const AuthForm = ({ mode = 'signup' }) => {
         fieldErrors[err.path[0]] = err.message
       })
       setErrors(fieldErrors)
-    } else {
-      setErrors({})
-      console.log('Form Submitted:', result.data)
-    }
+      return
+    } 
+
+    setErrors({})
+
+    try{
+
+      if(isSignup){
+
+        const { data,error } = await supabase.auth.signUp({
+          email: form.email,
+          password: form.password,
+          options: {
+            data: {
+              first_name: form.firstName,
+              last_name: form.lastName
+            }
+          }
+        })
+  
+        if (error) throw error;
+      
+        console.log("Signup success:", data);
+        alert("Account created successfully. Check your email.");
+      
+      } else {
+  
+        const {error} = await supabase.auth.signInWithPassword({
+          email: form.email,
+          password: form.password
+        })
+
+        if (error) throw error;
+      
+        console.log("Login success:", error);
+        alert("You are logged in!");
+  
+      }
+
+      navigate('/dashboard');
+      
+      } catch (error) { 
+        setErrors({
+          auth: error.message,
+        });
+      }
+
   }
 
   return (
@@ -69,12 +117,12 @@ const AuthForm = ({ mode = 'signup' }) => {
         {isSignup ? (
           <>
             Already have an account?{' '}
-            <span className="text-[#8EE14A] cursor-pointer">Sign in</span>
+             <button onClick={() => navigate('/login')}><span className="text-[#8EE14A] cursor-pointer">Sign in</span></button>
           </>
         ) : (
           <>
             Don’t have an account?{' '}
-            <span className="text-[#8EE14A] cursor-pointer">Sign up</span>
+            <button onClick={() => navigate('/signup')}><span className="text-[#8EE14A] cursor-pointer">Sign up</span></button>
           </>
         )}
       </p>
@@ -151,6 +199,8 @@ const AuthForm = ({ mode = 'signup' }) => {
         )}
 
         {errors.terms && <p className="text-red-500 text-xs">{errors.terms}</p>}
+
+        {errors.auth && <p className="text-red-500 text-xs">{errors.auth}</p>}
 
         {/* Submit Button */}
         <button
