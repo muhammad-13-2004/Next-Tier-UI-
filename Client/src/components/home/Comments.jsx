@@ -2,7 +2,7 @@ import React from 'react'
 
 const Comments = () => {
   return (
-    <section className="w-full flex flex-col items-center py-20 bg-white mt-20">
+    <section className="w-full flex flex-col items-center py-20 bg-white">
       {/* Top Divider Text */}
       <div className="w-full max-w-5xl flex items-center gap-4 mb-10">
         <div className="flex-1 h-[1px] bg-gray-200"></div>

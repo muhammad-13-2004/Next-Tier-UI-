@@ -1,12 +1,12 @@
 import React from 'react'
-import star from '../assets/star.png'
-import Toolimg from '../assets/Toolimg.png'
-import RightArrow from '../assets/RightArrow.png'
+import { Hash } from 'lucide-react'
+import Toolimg from '../../assets/Toolimg.png'
+import RightArrow from '../../assets/RightArrow.png'
 
 const Tools = () => {
   return (
-    <section className="bg-white w-full mt-20 flex items-center justify-center">
-      <div className="w-287.5 h-118.5 bg-[#FBFBFB] flex flex-col items-center gap-10 rounded-2xl relative overflow-hidden">
+    <section id='tools' className="bg-white w-full mt-30 flex items-center justify-center">
+      <div className="max-w-7xl h-full bg-[#FBFBFB] flex flex-col items-center gap-12 py-16 rounded-2xl relative overflow-hidden">
         {/* GRID BACKGROUND */}
         <div
           className="absolute inset-0 
@@ -28,13 +28,12 @@ const Tools = () => {
           className="absolute right-10 top-1 opacity-90 h-[178px]"
         />
 
-        <div className="flex flex-col items-center mt-10 gap-2 relative z-10">
-          <span className="font-medium text-[14px] text-[#67D909] flex items-center justify-center gap-2">
-            <img src={star} alt="" />
-            Learning Tools
+        <div className="flex flex-col items-center">
+          <span className="font-medium text-[14px] text-[#67D909] flex items-center justify-center gap-1">
+            <Hash className='w-6 h-6' />
+            Learning tools
           </span>
-
-          <h2 className="text-5xl font-medium">Learning Pack We have!</h2>
+          <h2 className="text-[40px] font-medium">Learning Pack we have</h2>
         </div>
 
         <div className="w-[1084px] h-[240px]  flex flex-row gap-4 items-center justify-center relative z-10">
