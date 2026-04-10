@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
-import Main from './pages/Main';
-import SignUp from './pages/SignUp';
-import Login from './pages/Login';
+import Main from './pages/Main'
+import SignUp from './pages/SignUp'
+import Login from './pages/Login'
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App
