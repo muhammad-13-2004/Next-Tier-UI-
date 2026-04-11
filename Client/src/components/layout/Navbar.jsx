@@ -2,9 +2,14 @@ import React from 'react'
 import LogoApp from '@/assets/LogoApp.png'
 import { Link } from 'react-router-dom'
 import { Button } from '../ui/button'
-import { Zap } from 'lucide-react'
+import { ArrowUpRight, Zap } from 'lucide-react'
+import { useAuthStore } from "@/store/authStore";
+
 
 const Navbar = () => {
+
+  const { user } = useAuthStore();
+
   return (
     <div className="w-full h-16.75 flex flex-row items-center justify-evenly">
       <div className="w-[149px] h-[35px] ">
@@ -19,12 +24,22 @@ const Navbar = () => {
       </div>
 
       <div className="">
-        <Link to="/signup">
-          <Button>
-            Sign up for Free
-            <Zap className='w-6 h-6 text-(--secondary-color)' />
-          </Button>
-        </Link>
+        {
+          user ?
+            <Link to="/dashboard">
+              <Button>
+                Dashboard
+                <ArrowUpRight  className='w-6 h-6 text-(--secondary-color)' />
+              </Button>
+            </Link>
+            :
+            <Link to="/signup">
+              <Button>
+                Sign up for Free
+                <Zap className='w-6 h-6 text-(--secondary-color)' />
+              </Button>
+            </Link>
+        }
       </div>
     </div>
   )

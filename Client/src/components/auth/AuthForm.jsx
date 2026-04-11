@@ -119,6 +119,22 @@ const AuthForm = ({ mode = 'signup' }) => {
     }
   };
 
+
+  const googleLogin = async () => {
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:5173/dashboard",
+      }
+    });
+
+    if (error) {
+      console.error(error.message);
+    }  
+
+  }
+
   return (
     <div className="w-[500px] bg-white p-6 rounded-xl ">
       {/* Heading */}
@@ -244,6 +260,7 @@ const AuthForm = ({ mode = 'signup' }) => {
         <button
           type="button"
           disabled={loading}
+          onClick={googleLogin}
           className="flex w-full items-center justify-center gap-2 rounded-full border py-3 disabled:opacity-60"
         >
           <img src={social} alt="google" className="w-[22px] h-[22px] " />
