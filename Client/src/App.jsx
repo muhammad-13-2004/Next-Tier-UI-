@@ -1,24 +1,33 @@
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import SignUp from './pages/public/SignUp';
-import Login from './pages/public/Login';
+import SignUp from "./pages/public/SignUp";
+import Login from "./pages/public/Login";
 import Home from "./pages/public/Home";
 import Dashboard from "./pages/dashboard/dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-
+import VerifyEmail from "./components/auth/VerifyEmail";
+import { useAuthStore } from "./store/authStore";
 
 function App() {
+  
+  const initAuth = useAuthStore((s) => s.initAuth);
+
+  useEffect(() => {
+    return initAuth();
+  }, [initAuth]);
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        {/* Protected Route */}
-        <Route element={<ProtectedRoute />}>
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route element={<ProtectedRoute requireVerified />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
-    </Router> 
+    </Router>
   );
 }
 

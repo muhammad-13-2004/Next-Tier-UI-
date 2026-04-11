@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
-import { email, z } from 'zod'
-import social from '../../assets/Social.png'
-import supabase from '@/services/supabase';
+import React, { useState } from "react";
+import { z } from "zod";
+import { Loader2 } from "lucide-react";
+import social from "../../assets/Social.png";
+import supabase from "@/services/supabase";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/authStore";
 
 // Zod Schemas
 const signupSchema = z.object({
@@ -22,8 +24,9 @@ const loginSchema = z.object({
 
 const AuthForm = ({ mode = 'signup' }) => {
 
-  const isSignup = mode === 'signup'
+  const isSignup = mode === "signup";
   const navigate = useNavigate();
+  const setUser = useAuthStore((s) => s.setUser);
 
   const [form, setForm] = useState({
     firstName: '',
@@ -34,6 +37,7 @@ const AuthForm = ({ mode = 'signup' }) => {
   })
 
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -60,51 +64,60 @@ const AuthForm = ({ mode = 'signup' }) => {
       return
     } 
 
-    setErrors({})
+    setErrors({});
+    setLoading(true);
 
-    try{
-
-      if(isSignup){
-
-        const { data,error } = await supabase.auth.signUp({
+    try {
+      if (isSignup) {
+        const { data, error } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
           options: {
             data: {
               first_name: form.firstName,
-              last_name: form.lastName
-            }
-          }
-        })
-  
-        if (error) throw error;
-      
-        console.log("Signup success:", data);
-        alert("Account created successfully. Check your email.");
-      
-      } else {
-  
-        const {error} = await supabase.auth.signInWithPassword({
-          email: form.email,
-          password: form.password
-        })
-
-        if (error) throw error;
-      
-        console.log("Login success:", error);
-        alert("You are logged in!");
-  
-      }
-
-      navigate('/dashboard');
-      
-      } catch (error) { 
-        setErrors({
-          auth: error.message,
+              last_name: form.lastName,
+            },
+          },
         });
-      }
 
-  }
+        if (error) throw error;
+
+        const sessionUser = data.session?.user ?? data.user;
+        if (sessionUser) setUser(sessionUser);
+
+        navigate("/verify-email", {
+          replace: true,
+          state: { email: form.email },
+        });
+        
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: form.email,
+          password: form.password,
+        });
+
+        if (error) throw error;
+
+        const user = data.user;
+        if (user) setUser(user);
+
+        if (user?.email_confirmed_at) {
+          navigate("/dashboard", { replace: true });
+        } else {
+          navigate("/verify-email", {
+            replace: true,
+            state: { email: user?.email ?? form.email },
+          });
+        }
+      }
+    } catch (error) {
+      setErrors({
+        auth: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-[500px] bg-white p-6 rounded-xl ">
@@ -205,9 +218,19 @@ const AuthForm = ({ mode = 'signup' }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-black text-white py-3 rounded-full"
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-black py-3 text-white disabled:opacity-70"
         >
-          {isSignup ? 'Create Account' : 'Login'}
+          {loading ? (
+            <>
+              <Loader2 className="h-5 w-5 shrink-0 animate-spin" aria-hidden />
+              <span>Please wait…</span>
+            </>
+          ) : isSignup ? (
+            "Create Account"
+          ) : (
+            "Login"
+          )}
         </button>
 
         {/* Divider */}
@@ -220,7 +243,8 @@ const AuthForm = ({ mode = 'signup' }) => {
         {/* Google Button */}
         <button
           type="button"
-          className="w-full border py-3 rounded-full flex items-center justify-center gap-2"
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-full border py-3 disabled:opacity-60"
         >
           <img src={social} alt="google" className="w-[22px] h-[22px] " />
           <span className="text-gray-600">Continue With Google</span>
