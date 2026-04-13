@@ -6,7 +6,7 @@ import Steps from '../../components/home/Steps'
 import Tools from '../../components/home/Tools'
 import Faqs from '../../components/home/Faqs'
 import Footer from '../../components/layout/Footer'
-// import Boarding1 from '../../components/boarding/Boarding1'
+// import Boarding3 from '../../components/boarding/Boarding3'
 
 const Home = () => {
   return (
@@ -23,3 +23,5 @@ const Home = () => {
 }
 
 export default Home
+
+
