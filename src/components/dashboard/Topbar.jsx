@@ -1,4 +1,5 @@
 import { Bell, Search } from "lucide-react";
+import fireIcon from '../../assets/fire-icon.png'
 
 const Topbar = () => {
   return (
@@ -13,9 +14,15 @@ const Topbar = () => {
       </div>
 
       <div className="flex items-center gap-4">
+
+        <div className="flex items-center gap-1 border px-3 py-2 rounded-full">
+          <p className="text-sm font-semibold">5-days streak</p>
+          <img src={fireIcon} className="w-5" />
+        </div>
+
         <Bell className="w-5 h-5" />
 
-        <div className="flex items-center gap-3 border px-3 py-1 rounded-full">
+        <div className="flex items-center gap-3 border-s px-3 py-1 cursor-pointer">
           <div className="w-8 h-8 rounded-full bg-(--secondary-color)"></div>
           <div>
             <p className="text-sm font-semibold">Muhammad</p>

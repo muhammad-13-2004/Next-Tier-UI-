@@ -37,7 +37,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             return (
               <button
                 key={item.label}
-                className="w-full flex items-center gap-2 p-3 rounded-xl hover:bg-(--secondary-color)/10 transition"
+                className="w-full flex items-center gap-2 p-3 rounded-xl hover:bg-(--primary-color)/3 transition"
               >
                 <Icon className="w-5 h-5 text-(--subtext-color)" />
                 {!collapsed && (
