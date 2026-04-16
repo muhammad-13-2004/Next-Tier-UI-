@@ -6,6 +6,7 @@ import Steps from '../../components/home/Steps'
 import Tools from '../../components/home/Tools'
 import Faqs from '../../components/home/Faqs'
 import Footer from '../../components/layout/Footer'
+import Cta from '../../components/home/CTA'
 // import Boarding3 from '../../components/boarding/Boarding3'
 
 const Home = () => {
@@ -17,6 +18,7 @@ const Home = () => {
       <Steps />
       <Tools />
       <Faqs />
+      <Cta/>
       <Footer />
     </>
   )
