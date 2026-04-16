@@ -1,16 +1,16 @@
-import { PanelLeftClose, PanelLeftOpen, House, BookOpen, Users, Bot, Briefcase, Settings} from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, House, BookOpen, Users, Bot, Briefcase, Settings } from "lucide-react";
 import LogoApp from '@/assets/LogoApp.png' 
 
 
 const menuItems = [
-    { label: "Home", icon: House },
-    { label: "My Roadmaps", icon: BookOpen },
-    { label: "Community", icon: Users },
-    { label: "AI Tutor", icon: Bot },
-    { label: "Career", icon: Briefcase },
+    { id: "main", label: "Home", icon: House },
+    { id: "roadmaps", label: "My Roadmaps", icon: BookOpen },
+    { id: "community", label: "Community", icon: Users },
+    { id: "aiTutor", label: "AI Tutor", icon: Bot },
+    { id: "career", label: "Career", icon: Briefcase },
 ];
   
-const Sidebar = ({ collapsed, setCollapsed }) => {
+const Sidebar = ({ collapsed, setCollapsed, activeTab, onTabChange }) => {
     return (
       <aside
         className={`fixed left-0 top-0 h-screen border-r border-[#F1F5F9] bg-(--background-color) transition-all duration-300 ${
@@ -37,11 +37,16 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             return (
               <button
                 key={item.label}
-                className="w-full flex items-center gap-2 p-3 rounded-xl hover:bg-(--primary-color)/3 transition"
+                onClick={() => onTabChange(item.id)}
+                className={`w-full flex items-center gap-2 p-3 rounded-xl transition ${
+                  activeTab === item.id
+                    ? "bg-(--primary-color)/6 text-(--primary-color)"
+                    : "hover:bg-(--primary-color)/6 text-(--subtext-color)"
+                }`}
               >
-                <Icon className="w-5 h-5 text-(--subtext-color)" />
+                <Icon className="w-5 h-5" />
                 {!collapsed && (
-                  <span className="text-(--subtext-color) font-normal">
+                  <span className="font-normal">
                     {item.label}
                   </span>
                 )}
@@ -54,11 +59,18 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             <div>
                 <h2>You have 10 credits!</h2>
             </div>
-            <button className="w-full flex items-center gap-2 p-3 rounded-xl hover:bg-(--secondary-color)/10 transition">
-            <Settings className="w-5 h-5 text-(--subtext-color)" />
-                <span className="text-(--subtext-color) font-normal">
+            <button
+              onClick={() => onTabChange("settings")}
+              className={`w-full flex items-center gap-2 p-3 rounded-xl transition ${
+                activeTab === "settings"
+                  ? "bg-(--secondary-color)/20 text-(--primary-color)"
+                  : "hover:bg-(--secondary-color)/10 text-(--subtext-color)"
+              }`}
+            >
+            <Settings className="w-5 h-5" />
+                {!collapsed && <span className="font-normal">
                     Settings
-                </span>
+                </span>}
             </button>
         </div>
 
