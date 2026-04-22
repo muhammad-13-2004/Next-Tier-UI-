@@ -1,35 +1,27 @@
-import React from 'react'
-import supabase from '@/services/supabase'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import QuickPanel from '@/components/dashboard/QuickPanel'
-import LearningPathsSection from '@/components/dashboard/LearningPathsSection'
-import DashOverview from '@/components/dashboard/DashOverview'
+import MainTab from '@/components/dashboard/tabs/MainTab'
+import RoadmapsTab from '@/components/dashboard/tabs/RoadmapsTab'
+import CommunityTab from '@/components/dashboard/tabs/CommunityTab'
+import AiTutorTab from '@/components/dashboard/tabs/AiTutorTab'
+import CareerTab from '@/components/dashboard/tabs/CareerTab'
+import SettingsTab from '@/components/dashboard/tabs/SettingsTab'
 
 const Dashboard = () => {
-  
-  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState('main')
 
-  const logout = async () => {
-    await supabase.auth.signOut()
-    navigate('/')
+  const tabComponents = {
+    main: <MainTab />,
+    roadmaps: <RoadmapsTab />,
+    community: <CommunityTab />,
+    aiTutor: <AiTutorTab />,
+    career: <CareerTab />,
+    settings: <SettingsTab />,
   }
 
   return (
-    <DashboardLayout>
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12">
-          <DashOverview />
-        </div>
-
-        <div className="col-span-9">
-          <LearningPathsSection />
-        </div>
-
-        <div className="col-span-3">
-          <QuickPanel />
-        </div>
-      </div>
+    <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
+      {tabComponents[activeTab] || <MainTab />}
     </DashboardLayout>
   )
 }
