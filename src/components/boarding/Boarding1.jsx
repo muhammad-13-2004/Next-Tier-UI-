@@ -10,7 +10,7 @@ const interests = [
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="w-6 h-6"
+        className="w-5 h-5"
       >
         <polyline points="16 18 22 12 16 6" />
         <polyline points="8 6 2 12 8 18" />
@@ -27,7 +27,7 @@ const interests = [
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="w-6 h-6"
+        className="w-5 h-5"
       >
         <path d="M12 19l7-7 3 3-7 7-3-3z" />
         <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
@@ -46,7 +46,7 @@ const interests = [
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="w-6 h-6"
+        className="w-5 h-5"
       >
         <rect x="18" y="3" width="4" height="18" />
         <rect x="10" y="8" width="4" height="13" />
@@ -64,7 +64,7 @@ const interests = [
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="w-6 h-6"
+        className="w-5 h-5"
       >
         <circle cx="12" cy="12" r="10" />
         <line x1="2" y1="12" x2="22" y2="12" />
@@ -82,7 +82,7 @@ const interests = [
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="w-6 h-6"
+        className="w-5 h-5"
       >
         <path d="M12 20h9" />
         <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
@@ -100,7 +100,7 @@ const interests = [
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
-        className="w-6 h-6"
+        className="w-5 h-5"
       >
         <circle cx="12" cy="12" r="10" />
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
@@ -112,7 +112,7 @@ const interests = [
   },
 ]
 
-export default function Boarding1() {
+export default function Boarding1({ onNext }) {
   const [selected, setSelected] = useState(new Set(['coding']))
 
   const toggle = (id) => {
@@ -124,20 +124,20 @@ export default function Boarding1() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col ">
-      {/* Header */}
-      <header className="px-8 py-5">
-        {/* Logo placeholder */}
-        <div className="w-36 h-10  flex items-center justify-center ">
-          <img src={Logo} alt="Logo Of The App " />
+    <div className="h-screen bg-white flex flex-col overflow-hidden">
+      <header className="px-8 py-3 shrink-0">
+        <div className="h-8 flex items-center">
+          <img
+            src={Logo}
+            alt="Logo Of The App"
+            className="h-full w-auto object-contain"
+          />
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col items-center px-6 pt-6 pb-10">
-        {/* Progress bar */}
-        <div className="w-full max-w-2xl mb-2">
-          <p className="text-right text-sm text-gray-400 mb-2">1/3</p>
+      <main className="flex-1 flex flex-col items-center px-6 overflow-hidden">
+        <div className="w-full max-w-2xl">
+          <p className="text-right text-xs text-gray-400 mb-1">1/3</p>
           <div className="flex gap-2">
             <div className="h-1 flex-1 rounded-full bg-secondary" />
             <div className="h-1 flex-1 rounded-full bg-border" />
@@ -145,36 +145,29 @@ export default function Boarding1() {
           </div>
         </div>
 
-        {/* Heading */}
-        <div className="text-center mt-10 mb-2">
-          <h1 className="text-3xl font-bold text-gray-900">
+        <div className="text-center mt-5">
+          <h1 className="text-2xl font-bold text-gray-900">
             Hey <span className="text-secondary">Muhammad</span>, Let's Find
             Your Spark!
           </h1>
-          <p className="text-subtext mt-3 text-sm">
+          <p className="text-subtext mt-1.5 text-sm">
             What do you find fun doing or learning? Pick everything that
             resonates even a little.
           </p>
         </div>
 
-        {/* Interest Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 w-full max-w-3xl">
+        <div className="grid grid-cols-3 gap-3 mt-4 w-full max-w-3xl">
           {interests.map((item) => {
             const isSelected = selected.has(item.id)
             return (
               <button
                 key={item.id}
                 onClick={() => toggle(item.id)}
-                className={`relative text-left rounded-2xl border p-5 transition-all duration-150 cursor-pointer
-                  ${
-                    isSelected
-                      ? 'border-secondary bg-green-50'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
-                  }`}
+                className={`relative text-left rounded-2xl border p-3.5 transition-all duration-150 cursor-pointer
+                  ${isSelected ? 'border-secondary bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
               >
-                {/* Checkbox */}
                 <div
-                  className={`absolute top-3 right-3 w-5 h-5 rounded-full border-2 flex items-center justify-center
+                  className={`absolute top-2.5 right-2.5 w-5 h-5 rounded-full border-2 flex items-center justify-center
                   ${isSelected ? 'border-secondary bg-secondary' : 'border-gray-300'}`}
                 >
                   {isSelected && (
@@ -189,19 +182,16 @@ export default function Boarding1() {
                     </svg>
                   )}
                 </div>
-
-                {/* Icon */}
                 <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center mb-2
                   ${isSelected ? 'bg-green-50 text-secondary' : 'bg-gray-100 text-subtext'}`}
                 >
                   {item.icon}
                 </div>
-
                 <p className="font-semibold text-gray-900 text-sm">
                   {item.title}
                 </p>
-                <p className="text-gray-500 text-xs mt-1 leading-relaxed">
+                <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
                   {item.description}
                 </p>
               </button>
@@ -209,9 +199,11 @@ export default function Boarding1() {
           })}
         </div>
 
-        {/* Buttons */}
-        <div className="flex gap-4 mt-12">
-          <button className="bg-black text-white px-7 py-3 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors">
+        <div className="flex gap-4 mt-5">
+          <button
+            onClick={() => onNext({ interests: [...selected] })}
+            className="bg-black text-white px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors"
+          >
             Next, Tell Us More
             <svg
               viewBox="0 0 24 24"
@@ -227,14 +219,13 @@ export default function Boarding1() {
               />
             </svg>
           </button>
-          <button className="border border-gray-300 text-gray-800 px-7 py-3 rounded-full font-medium text-sm hover:bg-gray-50 transition-colors">
+          <button className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm hover:bg-gray-50 transition-colors">
             Skip, I Know What To Learn
           </button>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="text-center text-xs text-gray-400 py-5">
+      <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
         © 2025 NextTier ·{' '}
         <a href="#" className="underline hover:text-gray-600">
           Privacy
