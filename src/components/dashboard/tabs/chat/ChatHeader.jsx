@@ -1,6 +1,6 @@
 const ChatHeader = ({ onClear, onNewChat }) => {
   return (
-    <div className="flex items-center justify-between p-6 rounded-t-xl">
+    <div className="flex items-center justify-between mb-10 rounded-t-xl">
       <div>
         <h2 className="font-semibold text-lg">AI Tutor ✨</h2>
         <p className="text-sm text-(--subtext-color)">
