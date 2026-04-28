@@ -1,9 +1,9 @@
-import PathCard from "./PathCard";
+import PathCard from './PathCard'
 import { paths } from '../../utils/PapularPaths'
-import { ArrowUpRight } from "lucide-react";
-import { Button } from "../ui/button";
+import { ArrowUpRight } from 'lucide-react'
+import { Button } from '../ui/button'
 
-const filters = ["All", "Coding", "Design", "Data", "Marketing", "Business"];
+const filters = ['All', 'Coding', 'Design', 'Data', 'Marketing', 'Business']
 
 const LearningPathsSection = () => {
   return (
@@ -13,9 +13,9 @@ const LearningPathsSection = () => {
           Papular Learning Paths
         </h2>
 
-        <Button variant = "link" size='sm'>
-          View All 
-          <ArrowUpRight  className='w-6 h-6 text-(--primary-color)' />
+        <Button variant="link" size="sm">
+          View All
+          <ArrowUpRight className="w-6 h-6 text-(--primary-color)" />
         </Button>
       </div>
 
@@ -25,8 +25,8 @@ const LearningPathsSection = () => {
             key={filter}
             className={`px-4 py-2 rounded-full text-sm border ${
               index === 0
-                ? "bg-(--primary-color) text-white"
-                : "border-(--border-color) text-(--subtext-color)"
+                ? 'bg-(--primary-color) text-white'
+                : 'border-(--border-color) text-(--subtext-color)'
             }`}
           >
             {filter}
@@ -40,7 +40,7 @@ const LearningPathsSection = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LearningPathsSection;
+export default LearningPathsSection
