@@ -8,14 +8,38 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import VerifyEmail from "./components/auth/VerifyEmail";
 import { useAuthStore } from "./store/authStore";
 import Boardingflow from "./components/boarding/Boardingflow";
+import CourseReadingTab from './components/dashboard/tabs/CourseReadingTab'
+
+// function App() {
+  
+//   const initAuth = useAuthStore((s) => s.initAuth);
+
+//   useEffect(() => {
+//     return initAuth();
+//   }, [initAuth]);
+
+//   return (
+//     <Router>
+//       <Routes>
+//         <Route path="/" element={<Home />} />
+//         <Route path="/signup" element={<SignUp />} />
+//         <Route path="/login" element={<Login />} />
+//         <Route path="/verify-email" element={<VerifyEmail />} />
+//         <Route element={<ProtectedRoute requireVerified />}>
+//           <Route path="/dashboard" element={<Dashboard />} />
+//           <Route path="/boarding" element={<Boarding1 />} />
+//         </Route>
+//       </Routes>
+//     </Router>
+//   );
+// }
+
+// export default App;
+
 
 function App() {
   
-  const initAuth = useAuthStore((s) => s.initAuth);
-
-  useEffect(() => {
-    return initAuth();
-  }, [initAuth]);
+  
 
   return (
     <Router>
@@ -25,6 +49,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/boarding" element={<Boardingflow />} />
+        <Route path="/lesson/:id" element={<CourseReadingTab />} />
         <Route element={<ProtectedRoute requireVerified />}>
           <Route path="/dashboard" element={<Dashboard />} />
           
