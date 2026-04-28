@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import VerifyEmail from "./components/auth/VerifyEmail";
 import { useAuthStore } from "./store/authStore";
 import Boardingflow from "./components/boarding/Boardingflow";
+import CourseReadingTab from './components/dashboard/tabs/CourseReadingTab'
 
 function App() {
   
@@ -25,6 +26,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/boarding" element={<Boardingflow />} />
+        <Route path="/lesson/:id" element={<CourseReadingTab />} />
         <Route element={<ProtectedRoute requireVerified />}>
           <Route path="/dashboard" element={<Dashboard />} />
           
