@@ -76,12 +76,51 @@ const goals = [
   },
 ]
 
-export default function Boarding3() {
+export default function Boarding3({ onNext, onBack }) {
   const [selected, setSelected] = useState('internship')
+
+  const CardItem = ({ goal }) => {
+    const isSelected = selected === goal.id
+    return (
+      <button
+        onClick={() => setSelected(goal.id)}
+        className={`relative flex items-start gap-3 p-4 rounded-2xl border text-left transition-all duration-150 cursor-pointer
+          ${isSelected ? 'border-secondary bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+      >
+        <div
+          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0
+          ${isSelected ? 'bg-green-100 text-secondary' : 'bg-gray-100 text-gray-500'}`}
+        >
+          {goal.icon}
+        </div>
+        <div className="flex-1">
+          <p className="font-semibold text-gray-900 text-sm">{goal.title}</p>
+          <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
+            {goal.description}
+          </p>
+        </div>
+        <div
+          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5
+          ${isSelected ? 'border-secondary bg-secondary' : 'border-gray-300'}`}
+        >
+          {isSelected && (
+            <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3">
+              <path
+                d="M2 6l3 3 5-5"
+                stroke="white"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          )}
+        </div>
+      </button>
+    )
+  }
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
-      {/* Header */}
       <header className="px-8 py-3 shrink-0">
         <div className="h-8 flex items-center">
           <img
@@ -92,9 +131,7 @@ export default function Boarding3() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="flex-1 flex flex-col items-center px-6 overflow-hidden">
-        {/* Progress */}
         <div className="w-full max-w-2xl">
           <p className="text-right text-xs text-gray-400 mb-1">3/3</p>
           <div className="flex gap-2">
@@ -104,7 +141,6 @@ export default function Boarding3() {
           </div>
         </div>
 
-        {/* Heading */}
         <div className="text-center mt-8">
           <h1 className="text-2xl font-bold text-gray-900">
             What's your <span className="text-secondary">main goal?</span>
@@ -115,103 +151,26 @@ export default function Boarding3() {
           </p>
         </div>
 
-        {/* Goal Cards — 3 col top row, 1 centered bottom */}
         <div className="w-full max-w-3xl mt-10">
           <div className="grid grid-cols-3 gap-4">
-            {goals.slice(0, 3).map((goal) => {
-              const isSelected = selected === goal.id
-              return (
-                <button
-                  key={goal.id}
-                  onClick={() => setSelected(goal.id)}
-                  className={`relative flex items-start gap-3 p-4 rounded-2xl border text-left transition-all duration-150 cursor-pointer
-                    ${isSelected ? 'border-secondary bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
-                >
-                  <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0
-                    ${isSelected ? 'bg-green-100 text-secondary' : 'bg-gray-100 text-gray-500'}`}
-                  >
-                    {goal.icon}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {goal.title}
-                    </p>
-                    <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
-                      {goal.description}
-                    </p>
-                  </div>
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5
-                    ${isSelected ? 'border-secondary bg-secondary' : 'border-gray-300'}`}
-                  >
-                    {isSelected && (
-                      <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3">
-                        <path
-                          d="M2 6l3 3 5-5"
-                          stroke="white"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                </button>
-              )
-            })}
+            {goals.slice(0, 3).map((goal) => (
+              <CardItem key={goal.id} goal={goal} />
+            ))}
           </div>
-
-          {/* 4th card centered */}
           <div className="flex justify-center mt-4">
-            {goals.slice(3).map((goal) => {
-              const isSelected = selected === goal.id
-              return (
-                <button
-                  key={goal.id}
-                  onClick={() => setSelected(goal.id)}
-                  className={`relative flex items-start gap-3 p-4 rounded-2xl border text-left transition-all duration-150 cursor-pointer w-[calc(33.333%-8px)]
-                    ${isSelected ? 'border-secondary bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300'}`}
-                >
-                  <div
-                    className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0
-                    ${isSelected ? 'bg-green-100 text-secondary' : 'bg-gray-100 text-gray-500'}`}
-                  >
-                    {goal.icon}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {goal.title}
-                    </p>
-                    <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">
-                      {goal.description}
-                    </p>
-                  </div>
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5
-                    ${isSelected ? 'border-secondary bg-secondary' : 'border-gray-300'}`}
-                  >
-                    {isSelected && (
-                      <svg viewBox="0 0 12 12" fill="none" className="w-3 h-3">
-                        <path
-                          d="M2 6l3 3 5-5"
-                          stroke="white"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
-                  </div>
-                </button>
-              )
-            })}
+            {goals.slice(3).map((goal) => (
+              <div key={goal.id} className="w-[calc(33.333%-8px)]">
+                <CardItem goal={goal} />
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-4 mt-10">
-          <button className="bg-black text-white px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors">
+          <button
+            onClick={() => onNext({ goal: selected })}
+            className="bg-black text-white px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors"
+          >
             Find My Skills
             <svg
               viewBox="0 0 24 24"
@@ -224,7 +183,10 @@ export default function Boarding3() {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </button>
-          <button className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors">
+          <button
+            onClick={onBack}
+            className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -243,7 +205,6 @@ export default function Boarding3() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
         © 2025 NextTier ·{' '}
         <a href="#" className="underline hover:text-gray-600">

@@ -7,7 +7,8 @@ import Dashboard from "./pages/dashboard/dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import VerifyEmail from "./components/auth/VerifyEmail";
 import { useAuthStore } from "./store/authStore";
-import Boarding5 from "./components/boarding/Boarding5";
+import Boardingflow from "./components/boarding/Boardingflow";
+import CourseReadingTab from './components/dashboard/tabs/CourseReadingTab'
 
 // function App() {
   
@@ -41,8 +42,25 @@ function App() {
   
 
   return (
-    <Boarding5 />
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/boarding" element={<Boardingflow />} />
+        <Route path="/lesson/:id" element={<CourseReadingTab />} />
+        <Route element={<ProtectedRoute requireVerified />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
+
+
+
