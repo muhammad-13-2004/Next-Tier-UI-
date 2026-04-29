@@ -15,7 +15,7 @@ const Community = () => {
       </p>
     </div>
     <FilterBar />
-    
+    <RoadmapGrid/>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import RoadmapCard from "./RoadmapGrid";
+import RoadmapCard from "@/dashboard/features/community/components/RoadmapCard";
 
 const dummyData = [
   {
