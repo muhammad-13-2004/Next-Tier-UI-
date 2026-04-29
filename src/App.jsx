@@ -7,8 +7,16 @@ import Dashboard from "./pages/dashboard/dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import VerifyEmail from "./components/auth/VerifyEmail";
 import { useAuthStore } from "./store/authStore";
-import Boardingflow from "./components/boarding/Boardingflow";
-import CourseReadingTab from './components/dashboard/tabs/CourseReadingTab'
+import Boarding from "./pages/public/Boarding";
+import CourseReadingTab from './dashboard/pages/CourseReading'
+import MyRoadmaps from "./dashboard/pages/MyRoadmaps";
+import Main from "./dashboard/pages/Main";
+import AiTutor from "./dashboard/pages/AiTutor";
+import Community from "./dashboard/pages/Community";
+import Settings from "./dashboard/pages/Settings";
+import Career from "./dashboard/pages/Career";
+
+
 
 function App() {
   
@@ -25,10 +33,17 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/lesson/:id" element={<CourseReadingTab />} />
-        <Route path="/boarding" element={<Boardingflow />} />
+        <Route path="/boarding" element={<Boarding />} />
         <Route element={<ProtectedRoute requireVerified />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route index element={<Main />} />
+          <Route path="roadmaps" element={<MyRoadmaps />} />
+          <Route path="lesson/:id" element={<CourseReadingTab />} />
+          <Route path="ai-tutor" element={<AiTutor />} />
+          <Route path="community" element={<Community />} />
+          <Route path="career" element={<Career />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
         </Route>
       </Routes>
     </Router>

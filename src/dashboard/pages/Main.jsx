@@ -1,9 +1,9 @@
 import React from "react";
-import QuickPanel from "@/components/dashboard/QuickPanel";
-import LearningPathsSection from "@/components/dashboard/LearningPathsSection";
-import DashOverview from "@/components/dashboard/DashOverview";
+import QuickPanel from "@/dashboard/features/home/components/QuickPanel";
+import LearningPathsSection from "@/dashboard/features/home/components/LearningPathsSection";
+import DashOverview from "@/dashboard/features/home/components/DashOverview";
 
-const MainTab = () => {
+const Main = () => {
   return (
     <div className="grid grid-cols-12 gap-6">
       <div className="col-span-12">
@@ -21,4 +21,4 @@ const MainTab = () => {
   );
 };
 
-export default MainTab;
+export default Main;

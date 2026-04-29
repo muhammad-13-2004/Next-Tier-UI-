@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../../../../components/ui/button";
 import { Dumbbell, Play, BookOpen, CalendarClock, Timer, Flame } from "lucide-react";
 
 const DashOverview = () => {

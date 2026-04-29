@@ -1,7 +1,7 @@
 import SetupCard from "./SetupCard";
 import AiTutorCard from "./AiTutorCard";
-import FriendshipRankCard from "./tabs/FriendshipRankCard";
-import InternshipCard from "./tabs/InternshipCard";
+import FriendshipRankCard from "./FriendshipRankCard";
+import InternshipCard from "./InternshipCard";
 
 const QuickPanel = () => {
   return (

@@ -1,27 +1,52 @@
-import React, { useState } from 'react'
-import DashboardLayout from '@/components/layout/DashboardLayout'
-import MainTab from '@/components/dashboard/tabs/MainTab'
-import RoadmapsTab from '@/components/dashboard/tabs/RoadmapsTab'
-import CommunityTab from '@/components/dashboard/tabs/CommunityTab'
-import AiTutorTab from '@/components/dashboard/tabs/AiTutorTab'
-import CareerTab from '@/components/dashboard/tabs/CareerTab'
-import SettingsTab from '@/components/dashboard/tabs/SettingsTab'
+import React from 'react'
+import DashboardLayout from '@/dashboard/layout/DashboardLayout'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState('main')
+  const location = useLocation()
+  const navigate = useNavigate()
 
-  const tabComponents = {
-    main: <MainTab />,
-    roadmaps: <RoadmapsTab />,
-    community: <CommunityTab />,
-    aiTutor: <AiTutorTab />,
-    career: <CareerTab />,
-    settings: <SettingsTab />,
+  const activeTab = (() => {
+    const path = location.pathname
+    if (path === '/dashboard' || path === '/dashboard/') return 'main'
+    if (path.startsWith('/dashboard/roadmaps')) return 'roadmaps'
+    if (path.startsWith('/dashboard/lesson/')) return 'roadmaps' // lesson reading originates from roadmaps
+    if (path.startsWith('/dashboard/community')) return 'community'
+    if (path.startsWith('/dashboard/ai-tutor')) return 'aiTutor'
+    if (path.startsWith('/dashboard/career')) return 'career'
+    if (path.startsWith('/dashboard/settings')) return 'settings'
+    return 'main'
+  })()
+
+  const handleTabChange = (id) => {
+    switch (id) {
+      case 'main':
+        navigate('/dashboard')
+        break
+      case 'roadmaps':
+        navigate('/dashboard/roadmaps')
+        break
+      case 'community':
+        navigate('/dashboard/community')
+        break
+      case 'aiTutor':
+        navigate('/dashboard/ai-tutor')
+        break
+      case 'career':
+        navigate('/dashboard/career')
+        break
+      case 'settings':
+        navigate('/dashboard/settings')
+        break
+      default:
+        navigate('/dashboard')
+        break
+    }
   }
 
   return (
-    <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
-      {tabComponents[activeTab] || <MainTab />}
+    <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
+      <Outlet />
     </DashboardLayout>
   )
 }

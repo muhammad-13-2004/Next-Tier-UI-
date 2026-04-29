@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Sidebar from "../dashboard/Sidebar";
-import Topbar from "../dashboard/Topbar";
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
 
 const DashboardLayout = ({ children, activeTab, onTabChange }) => {
   const [collapsed, setCollapsed] = useState(false);

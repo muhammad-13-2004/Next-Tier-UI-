@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import RoadmapCard from '../RoadmapCard'
+import RoadmapCard from '../features/roadmap/components/RoadmapCard'
 import RoadmapDetail from './RoadmapDetail'
 import { ROADMAPS } from '@/utils/Roadmaps'
 
@@ -10,7 +10,7 @@ const FILTER_TABS = [
   { key: 'saved', label: 'Saved' },
 ]
 
-const RoadmapsTab = () => {
+const MyRoadmaps = () => {
   const [filter, setFilter] = useState('all')
   const [selectedRoadmap, setSelectedRoadmap] = useState(null)
 
@@ -103,4 +103,4 @@ const RoadmapsTab = () => {
   )
 }
 
-export default RoadmapsTab
+export default MyRoadmaps

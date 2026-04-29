@@ -1,5 +1,5 @@
-import botIcon from "../../assets/nexttier-icon.png";
-import { Button } from "../ui/button";
+import botIcon from "@/assets/nexttier-icon.png";
+import { Button } from "../../../../components/ui/button";
 
 const AiTutorCard = () => {
     return (

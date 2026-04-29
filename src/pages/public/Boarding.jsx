@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react"
-import Boarding1 from "./Boarding1"
-import Boarding2 from "./Boarding2"
-import Boarding3 from "./Boarding3"
-import Boarding4 from "./Boarding4"
-import Boarding5 from "./Boarding5"
+import Boarding1 from "../../components/boarding/Boarding1"
+import Boarding2 from "../../components/boarding/Boarding2"
+import Boarding3 from "../../components/boarding/Boarding3"
+import Boarding4 from "../../components/boarding/Boarding4"
+import Boarding5 from "../../components/boarding/Boarding5"
 
-export default function BoardingFlow() {
+export default function Boarding() {
   const [step, setStep] = useState(1)
   const [preferences, setPreferences] = useState({
     interests: [],

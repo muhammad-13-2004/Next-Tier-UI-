@@ -1,7 +1,7 @@
-import PathCard from './PathCard'
-import { paths } from '../../utils/PapularPaths'
+import PathCard from '../../roadmap/components/PathCard'
+import { paths } from '../../../../utils/PapularPaths'
 import { ArrowUpRight } from 'lucide-react'
-import { Button } from '../ui/button'
+import { Button } from '../../../../components/ui/button'
 
 const filters = ['All', 'Coding', 'Design', 'Data', 'Marketing', 'Business']
 
