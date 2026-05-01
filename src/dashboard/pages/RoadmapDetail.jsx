@@ -53,6 +53,7 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                     <ModuleAccordion
                         key={mod.id}
                         module={mod}
+                        roadmapSlug={roadmap.slug}
                         defaultOpen={mod.status === "in-progress"}
                     />
                 ))}

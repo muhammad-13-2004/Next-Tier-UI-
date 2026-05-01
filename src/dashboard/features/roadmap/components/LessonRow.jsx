@@ -2,7 +2,7 @@ import React from 'react'
 import { Check, Lock, Play } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-const LessonRow = ({ lesson, num }) => {
+const LessonRow = ({ lesson, num, roadmapSlug }) => {
   const navigate = useNavigate()
 
   const done = lesson.status === 'completed'
@@ -38,7 +38,7 @@ const LessonRow = ({ lesson, num }) => {
 
       {active && (
         <span
-          onClick={() => navigate(`/lesson/${lesson.id}`)}
+          onClick={() => navigate(`/dashboard/roadmaps/${roadmapSlug}/${lesson.id}`)}
           className="text-xs font-bold text-[#5BC932] whitespace-nowrap cursor-pointer"
         >
           <span className="inline-flex items-center gap-1">

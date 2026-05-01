@@ -37,10 +37,11 @@ function App() {
         <Route path="/boarding" element={<Boarding />} />
         <Route path="/certificate/:courseId" element={<CertificatePage />} />
         <Route element={<ProtectedRoute requireVerified />}>
+        <Route path="/dashboard/roadmaps/:slug/:id" element={<CourseReadingTab />} />
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<Main />} />
           <Route path="roadmaps" element={<MyRoadmaps />} />
-          <Route path="lesson/:id" element={<CourseReadingTab />} />
+          <Route path="roadmaps/:slug" element={<MyRoadmaps />} />
           <Route path="ai-tutor" element={<AiTutor />} />
           <Route path="community" element={<Community />} />
           <Route path="career" element={<Career />} />
