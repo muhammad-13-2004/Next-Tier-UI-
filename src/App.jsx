@@ -15,6 +15,7 @@ import AiTutor from "./dashboard/pages/AiTutor";
 import Community from "./dashboard/pages/Community";
 import Settings from "./dashboard/pages/Settings";
 import Career from "./dashboard/pages/Career";
+import CertificatePage from "./pages/public/CertificatePage";
 
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/boarding" element={<Boarding />} />
+        <Route path="/certificate/:courseId" element={<CertificatePage />} />
         <Route element={<ProtectedRoute requireVerified />}>
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<Main />} />
