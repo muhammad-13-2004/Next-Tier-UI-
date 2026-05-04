@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowLeft, TrendingUp } from "lucide-react";
-import ModuleAccordion from "@/components/dashboard/ModuleAccordion";
+import ModuleAccordion from "@/dashboard/features/roadmap/components/ModuleAccordion";
 
 const RoadmapDetail = ({ roadmap, onBack }) => {
     
@@ -53,6 +53,7 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                     <ModuleAccordion
                         key={mod.id}
                         module={mod}
+                        roadmapSlug={roadmap.slug}
                         defaultOpen={mod.status === "in-progress"}
                     />
                 ))}

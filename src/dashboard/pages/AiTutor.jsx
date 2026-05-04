@@ -1,10 +1,10 @@
-import ChatHeader from "./chat/ChatHeader";
-import ChatMessages from "./chat/ChatMessages";
-import ChatInput from "./chat/ChatInput";
-import WelcomeCard from "./chat/WelcomeCard";
+import ChatHeader from "../features/ai-tutor/component/ChatHeader";
+import ChatMessages from "../features/ai-tutor/component/ChatMessages";
+import ChatInput from "../features/ai-tutor/component/ChatInput";
+import WelcomeCard from "../features/ai-tutor/component/WelcomeCard";
 import { useState } from "react";
 
-const AiTutorTab = () => {
+const AiTutor = () => {
   const [messages, setMessages] = useState([]);
 
   const handleSend = (text) => {
@@ -44,4 +44,4 @@ const AiTutorTab = () => {
   );
 };
 
-export default AiTutorTab;
+export default AiTutor;

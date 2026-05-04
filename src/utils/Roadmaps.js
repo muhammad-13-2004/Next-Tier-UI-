@@ -6,6 +6,7 @@ export const ROADMAPS = [
     accentColor: "#7AE84A",
     title: "Python for Data Science",
     subtitle: "Master core libraries and analytical workflows for modern data science.",
+    slug: "python-for-data-science",
     status: "in-progress",
     progress: 64,
     modules: [
@@ -371,6 +372,7 @@ export const ROADMAPS = [
     accentColor: "#a78bfa",
     title: "UI/UX Design with Figma",
     subtitle: "Go from wireframes to polished prototypes with modern design thinking.",
+    slug: "ui-ux-design-with-figma",
     status: "in-progress",
     progress: 35,
     modules: [
@@ -383,7 +385,7 @@ export const ROADMAPS = [
         status: "completed",
         lessons: [
           {
-            id: "ul1",
+            id: "l1",
             position: 1,
             title: "Colour & Contrast",
             status: "completed",
@@ -399,7 +401,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul2",
+            id: "l2",
             position: 2,
             title: "Typography Basics",
             status: "completed",
@@ -415,7 +417,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul3",
+            id: "l3",
             position: 3,
             title: "Grid & Spacing",
             status: "completed",
@@ -441,7 +443,7 @@ export const ROADMAPS = [
         status: "in-progress",
         lessons: [
           {
-            id: "ul4",
+            id: "l4",
             position: 1,
             title: "Frames & Groups",
             status: "in-progress",
@@ -458,7 +460,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul5",
+            id: "l5",
             position: 2,
             title: "Components & Variants",
             status: "locked",
@@ -474,7 +476,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul6",
+            id: "l6",
             position: 3,
             title: "Auto-layout Deep Dive",
             status: "locked",
@@ -504,7 +506,7 @@ export const ROADMAPS = [
         status: "locked",
         lessons: [
           {
-            id: "ul7",
+            id: "l7",
             position: 1,
             title: "Prototype Basics in Figma",
             status: "locked",
@@ -520,7 +522,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul8",
+            id: "l8",
             position: 2,
             title: "Transitions & Animations",
             status: "locked",
@@ -536,7 +538,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul9",
+            id: "l9",
             position: 3,
             title: "Interactive Components",
             status: "locked",
@@ -552,7 +554,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul10",
+            id: "l10",
             position: 4,
             title: "Micro-interaction Design",
             status: "locked",
@@ -578,7 +580,7 @@ export const ROADMAPS = [
         status: "locked",
         lessons: [
           {
-            id: "ul11",
+            id: "l11",
             position: 1,
             title: "Planning User Interviews",
             status: "locked",
@@ -594,7 +596,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul12",
+            id: "l12",
             position: 2,
             title: "Usability Testing",
             status: "locked",
@@ -610,7 +612,7 @@ export const ROADMAPS = [
             challenge: null,
           },
           {
-            id: "ul13",
+            id: "l13",
             position: 3,
             title: "Synthesis & Affinity Mapping",
             status: "locked",
