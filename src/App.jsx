@@ -15,8 +15,7 @@ import AiTutor from "./dashboard/pages/AiTutor";
 import Community from "./dashboard/pages/Community";
 import Settings from "./dashboard/pages/Settings";
 import Career from "./dashboard/pages/Career";
-
-
+import AddRoadmap from "./dashboard/features/roadmap/components/AddRoadmap";
 
 function App() {
   
@@ -29,23 +28,25 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/boarding" element={<Boarding />} />
-        <Route element={<ProtectedRoute requireVerified />}>
-        <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<Main />} />
-          <Route path="roadmaps" element={<MyRoadmaps />} />
-          <Route path="lesson/:id" element={<CourseReadingTab />} />
-          <Route path="ai-tutor" element={<AiTutor />} />
-          <Route path="community" element={<Community />} />
-          <Route path="career" element={<Career />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
-        </Route>
-      </Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/signup" element={<SignUp />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/verify-email" element={<VerifyEmail />} />
+  <Route path="/boarding" element={<Boarding />} />
+
+  <Route element={<ProtectedRoute requireVerified />}>
+    <Route path="/dashboard" element={<Dashboard />}>
+      <Route index element={<Main />} />
+      <Route path="roadmaps" element={<MyRoadmaps />} />
+      <Route path="lesson/:id" element={<CourseReadingTab />} />
+      <Route path="ai-tutor" element={<AiTutor />} />
+      <Route path="community" element={<Community />} />
+      <Route path="career" element={<Career />} />
+      <Route path="settings" element={<Settings />} />
+      <Route path="add-roadmap" element={<AddRoadmap />} />
+    </Route>
+  </Route>
+</Routes>
     </Router>
   );
 }

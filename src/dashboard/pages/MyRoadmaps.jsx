@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import RoadmapCard from '../features/roadmap/components/RoadmapCard'
 import RoadmapDetail from './RoadmapDetail'
 import { ROADMAPS } from '@/utils/Roadmaps'
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 const FILTER_TABS = [
   { key: 'all', label: 'All' },
@@ -11,6 +14,8 @@ const FILTER_TABS = [
 ]
 
 const MyRoadmaps = () => {
+  
+  const navigate = useNavigate();
   const [filter, setFilter] = useState('all')
   const [selectedRoadmap, setSelectedRoadmap] = useState(null)
 
@@ -46,9 +51,11 @@ const MyRoadmaps = () => {
             All your enrolled and saved learning paths
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#111] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#404040] transition-colors">
-          + Add Roadmap
-        </button>
+        <Link
+        to="/dashboard/add-roadmap"
+        className="flex items-center gap-2 bg-[#111] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#404040] transition-colors">
+        + Add Roadmap
+        </Link>
       </div>
 
       {/* Filter tabs */}
@@ -84,9 +91,12 @@ const MyRoadmaps = () => {
             You don't have any roadmaps in this category. Browse paths to get
             started.
           </p>
-          <button className="mt-5 bg-[#111] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#404040] transition-colors">
-            + Add Roadmap
-          </button>
+        <Link to="/dashboard/add-roadmap"
+          onClick={() => navigate("/add-roadmap")}
+          className="flex items-center gap-2 bg-[#111] text-white px-5 py-2.5 rounded-full"
+        >
+          + Add Roadmap
+        </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
