@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import RoadmapCard from '../features/roadmap/components/RoadmapCard'
 import RoadmapDetail from './RoadmapDetail'
 import { ROADMAPS } from '@/utils/Roadmaps'
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 
 const FILTER_TABS = [
@@ -14,10 +14,9 @@ const FILTER_TABS = [
 ]
 
 const MyRoadmaps = () => {
-  
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const { slug } = useParams()
   const [filter, setFilter] = useState('all')
-  const [selectedRoadmap, setSelectedRoadmap] = useState(null)
 
   const counts = FILTER_TABS.reduce((acc, t) => {
     acc[t.key] =
@@ -30,11 +29,13 @@ const MyRoadmaps = () => {
   const visible =
     filter === 'all' ? ROADMAPS : ROADMAPS.filter((r) => r.status === filter)
 
+  const selectedRoadmap = slug ? ROADMAPS.find((r) => r.slug === slug) : null
+
   if (selectedRoadmap) {
     return (
       <RoadmapDetail
         roadmap={selectedRoadmap}
-        onBack={() => setSelectedRoadmap(null)}
+        onBack={() => navigate('/dashboard/roadmaps')}
       />
     )
   }
@@ -104,7 +105,7 @@ const MyRoadmaps = () => {
             <RoadmapCard
               key={rm.id}
               roadmap={rm}
-              onClick={() => setSelectedRoadmap(rm)}
+              onClick={() => navigate(`/dashboard/roadmaps/${rm.slug}`)}
             />
           ))}
         </div>

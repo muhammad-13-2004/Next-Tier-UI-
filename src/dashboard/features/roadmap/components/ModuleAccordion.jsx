@@ -12,7 +12,7 @@ import {
 
 
 
-const ModuleAccordion = ({ module, defaultOpen = false }) => {
+const ModuleAccordion = ({ module, roadmapSlug, defaultOpen = false }) => {
 
     const [open, setOpen] = useState(defaultOpen);
 
@@ -86,7 +86,7 @@ const ModuleAccordion = ({ module, defaultOpen = false }) => {
                         {/* Lesson list */}
                         <div className="flex-1 px-6 py-2 divide-y divide-[#F4F4F4]">
                             {module.lessons.map((lesson, i) => (
-                                <LessonRow key={lesson.id} lesson={lesson} num={i + 1} />
+                                <LessonRow key={lesson.id} lesson={lesson} num={i + 1} roadmapSlug={roadmapSlug} />
                             ))}
                         </div>
 

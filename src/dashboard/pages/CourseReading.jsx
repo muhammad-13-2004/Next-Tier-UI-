@@ -3,8 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Check, ChevronLeft, ChevronRight, Lock, Play } from 'lucide-react'
 import { ROADMAPS } from '@/utils/Roadmaps'
 
-function findLessonDetails(lessonId) {
-  for (const roadmap of ROADMAPS) {
+function findLessonDetails(roadmapSlug, lessonId) {
+  const roadmap = ROADMAPS.find((item) => item.slug === roadmapSlug)
+
+  if (roadmap) {
     for (const module of roadmap.modules) {
       const lessonIndex = module.lessons.findIndex((lesson) => lesson.id === lessonId)
       if (lessonIndex !== -1) {
@@ -235,13 +237,13 @@ function RoadmapItem({ lesson, isActive, onOpen }) {
 }
 
 export default function CourseReadingTab() {
-  const { id } = useParams()
+  const { slug, id } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('Reading')
 
   const { roadmap, module, lesson, lessonIndex } = useMemo(
-    () => findLessonDetails(id),
-    [id],
+    () => findLessonDetails(slug, id),
+    [slug, id],
   )
 
   const moduleLessons = module?.lessons ?? []
@@ -443,7 +445,10 @@ export default function CourseReadingTab() {
 
             <div className="mt-8 flex items-center justify-between border-t border-[#F0F0F0] pt-6">
               <button
-                onClick={() => previousLesson && navigate(`/lesson/${previousLesson.id}`)}
+                onClick={() =>
+                  previousLesson &&
+                  navigate(`/dashboard/roadmaps/${roadmap.slug}/${previousLesson.id}`)
+                }
                 disabled={!previousLesson}
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#666] transition-colors hover:text-[#111] disabled:cursor-not-allowed disabled:opacity-40"
               >
@@ -452,7 +457,9 @@ export default function CourseReadingTab() {
               </button>
 
               <button
-                onClick={() => nextLesson && navigate(`/lesson/${nextLesson.id}`)}
+                onClick={() =>
+                  nextLesson && navigate(`/dashboard/roadmaps/${roadmap.slug}/${nextLesson.id}`)
+                }
                 disabled={!nextLesson}
                 className="inline-flex items-center gap-2 rounded-full bg-[#7AE84A] px-5 py-2.5 text-sm font-bold text-black transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
@@ -497,7 +504,9 @@ export default function CourseReadingTab() {
                     key={moduleLesson.id}
                     lesson={moduleLesson}
                     isActive={moduleLesson.id === lesson.id}
-                    onOpen={(lessonId) => navigate(`/lesson/${lessonId}`)}
+                    onOpen={(lessonId) =>
+                      navigate(`/dashboard/roadmaps/${roadmap.slug}/${lessonId}`)
+                    }
                   />
                 ))}
               </div>
