@@ -2,9 +2,10 @@ import Logo from '../../assets/LogoApp.png'
 import LoadingImage from '../../assets/nexttier-icon.png'
 import CourseCard from './CourseCard'
 
-export default function Boarding5({ recommendations, status, error, onRetry, onBack }) {
+export default function Boarding4({ recommendations, status, error, onRetry, onBack, onStartCourse }) {
+  
   const isLoading = status === 'loading'
-  const isError = status === 'error'
+  const isError = !isLoading && Boolean(error)
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
@@ -62,9 +63,14 @@ export default function Boarding5({ recommendations, status, error, onRetry, onB
 
         {!isLoading && !isError ? (
           recommendations.length > 0 ? (
-            <div className="grid grid-cols-3 gap-5 my-14 w-full max-w-5xl">
+            <div className="grid grid-cols-3 gap-5 my-14 w-full h-100 max-w-6xl">
               {recommendations.map((course) => (
-                <CourseCard key={course.id} course={course} />
+                <CourseCard
+                  key={course.slug ?? course.title}
+                  course={course}
+                  loading={isLoading}
+                  onStart={onStartCourse}
+                />
               ))}
             </div>
           ) : (
@@ -111,14 +117,14 @@ export default function Boarding5({ recommendations, status, error, onRetry, onB
         ) : null}
       </main>
 
-      <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
+      {/* <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
         © 2026 NextTier ·{" "}
         <a href="#" className="underline hover:text-gray-600">Privacy</a>
         {" · "}
         <a href="#" className="underline hover:text-gray-600">Terms</a>
         {" · "}
         Built with <span className="text-red-500">♥</span> for curious minds
-      </footer>
+      </footer> */}
 
       <style>{`
         @keyframes pulse-scale {

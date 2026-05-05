@@ -1,31 +1,27 @@
 import axios from "axios";
-
-const API_BASE_URL = "https://oasrvhtgkgqelbhufuxa.supabase.co/functions/v1";
+import { useAuthStore } from "@/store/authStore";
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: "https://oasrvhtgkgqelbhufuxa.supabase.co/functions/v1",
   timeout: 20000,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
-const buildAuthHeaders = (token) => {
-  if (!token) {
-    throw new Error("Missing auth token. Please login again.");
+// Attached token automatically on every request
+apiClient.interceptors.request.use((config) => {
+  const token = useAuthStore.getState().accessToken;
+  if (!token) throw new Error("Missing auth token. Please login again.");
+  config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Centralised error handling
+apiClient.interceptors.response.use(
+  (res) => res.data,          
+  (err) => {
+    const message = err.response?.data?.error ?? err.message;
+    return Promise.reject(new Error(message));
   }
-
-  return {
-    Authorization: `Bearer ${token}`,
-  };
-};
-
-export const apiPost = async (url, body, token) => {
-  const response = await apiClient.post(url, body, {
-    headers: buildAuthHeaders(token),
-  });
-
-  return response.data;
-};
+);
 
 export default apiClient;

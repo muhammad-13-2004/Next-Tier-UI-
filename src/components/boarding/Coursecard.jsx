@@ -1,8 +1,17 @@
 import { Book } from "lucide-react";
 
-export default function CourseCard({ course }) {
+export default function CourseCard({ course, onStart, loading = false }) {
+  const duration = course.duration ?? course.estimated_duration ?? "Flexible pace";
+  const demand = course.demand ?? course.market_demand ?? "High demand";
+  const complexity = course.complexity ?? course.level ?? "Beginner";
+  const modulePreview =
+    course.module_preview ??
+    course.modulePreview ??
+    course.modules?.slice(0, 3)?.map((m) => m.title) ??
+    [];
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-4 w-full">
+    <div className="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col justify-between gap-2 w-full">
 
       {/* Top: icon + title + badge */}
       <div className="flex items-center gap-3">
@@ -20,7 +29,7 @@ export default function CourseCard({ course }) {
         </div>
       </div>
 
-      <hr className="border-gray-100" />
+      <hr className="border-gray-200" />
 
       {/* Why You'll Love It */}
       <div>
@@ -28,21 +37,36 @@ export default function CourseCard({ course }) {
         <p className="text-sm text-gray-500 leading-relaxed">{course.short_description}</p>
       </div>
 
+      {modulePreview.length > 0 ? (
+        <div>
+          <p className="text-sm font-semibold text-gray-800 mb-1.5">Module Preview:</p>
+          <ul className="text-sm text-gray-500 leading-relaxed list-disc pl-5">
+            {modulePreview.slice(0, 3).map((moduleTitle, idx) => (
+              <li key={`${course.slug}-module-${idx}`}>{moduleTitle}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
       {/* Tags */}
       <div className="flex flex-wrap gap-2">
           <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1">
-            {course.duration}
+            {duration}
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1">
-            {course.demand}
+            {demand}
           </span>
           <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1">
-            {course.complexity}
+            {complexity}
           </span>
       </div>
 
       {/* CTA */}
-      <button className="w-full bg-secondary text-black font-semibold text-sm py-3 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-1">
+      <button
+        onClick={() => onStart?.(course.slug)}
+        disabled={loading}
+        className="w-full bg-secondary text-black font-semibold text-sm py-3 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
         Start This Path
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
           <path d="M7 17L17 7M17 7H7M17 7v10" strokeLinecap="round" strokeLinejoin="round"/>

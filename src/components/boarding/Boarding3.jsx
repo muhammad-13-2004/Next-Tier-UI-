@@ -205,7 +205,7 @@ export default function Boarding3({ onNext, onBack }) {
         </div>
       </main>
 
-      <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
+      {/* <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
         © 2025 NextTier ·{' '}
         <a href="#" className="underline hover:text-gray-600">
           Privacy
@@ -216,7 +216,7 @@ export default function Boarding3({ onNext, onBack }) {
         </a>
         {' · '}
         Built with <span className="text-red-500">♥</span> for curious minds
-      </footer>
+      </footer> */}
     </div>
   )
 }
