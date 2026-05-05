@@ -102,7 +102,7 @@ const AuthForm = ({ mode = 'signup' }) => {
         if (user) setUser(user);
 
         if (user?.email_confirmed_at) {
-          navigate("/boarding", { replace: true });
+          navigate("/dashboard", { replace: true });
         } else {
           navigate("/verify-email", {
             replace: true,

@@ -9,9 +9,9 @@ export const useCourseStore = create((set) => ({
   loading:       false,
   error:         null,
 
-  // Called after user picks a recommended course OR a community course
-  // slugMode:   generateRoadmap({ user_id, course_slug, goal, ... })
-  // promptMode: generateRoadmap({ user_id, prompt, complexity, ... })
+  // Called after user picks a recommended course OR enters a custom prompt
+  // recommendation mode: generateRoadmap({ mode: "recommendation", input: { title, complexity, goal, time_commitment } })
+  // prompt mode:         generateRoadmap({ mode: "prompt", input: { prompt, complexity, goal, time_commitment } })
   generateRoadmap: async (payload) => {
     set({ generating: true, error: null });
     try {

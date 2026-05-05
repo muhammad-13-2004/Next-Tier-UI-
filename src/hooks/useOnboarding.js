@@ -25,12 +25,15 @@ export function useOnboarding() {
       await store.confirmAndSave(user.id);
 
       // 2. Generate roadmap for the chosen course
+      const selectedCourse = store.recommendations.find((c) => c.slug === courseSlug);
       const course = await generateRoadmap({
-        user_id:         user.id,
-        course_slug:     courseSlug,
-        goal:            store.goal,
-        learning_styles: store.learningStyles,
-        time_commitment: store.timeCommitment,
+        mode: "recommendation",
+        input: {
+          title: selectedCourse?.title ?? courseSlug,
+          complexity: selectedCourse?.complexity ?? selectedCourse?.level ?? "beginner",
+          goal: store.goal,
+          time_commitment: store.timeCommitment,
+        },
       });
 
       const firstLessonId = course?.modules?.[0]?.lessons?.[0]?.id;

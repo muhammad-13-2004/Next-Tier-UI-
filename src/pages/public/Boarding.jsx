@@ -18,6 +18,7 @@ export default function Boarding() {
     error,
     submitAndRecommend,
     pickCourse,
+    handleSkip,
     reset,
   } = useOnboarding();
 
@@ -30,12 +31,12 @@ export default function Boarding() {
   };
 
   const handleNext2 = (data) => {
-    setLearningStyles(data.learningStyles);
+    setLearningStyles(data.learnStyle ?? []);
+    setTimeCommitment(data.weeklyTime ?? null);
     next();
   };
 
   const handleNext3 = async (data) => {
-    setTimeCommitment(data.timeCommitment);
     setGoal(data.goal);
     setStep(5);
     await submitAndRecommend();
@@ -50,7 +51,7 @@ export default function Boarding() {
     setStep(3);
   };
 
-  if (step === 1) return <Boarding1 onNext={handleNext1} />;
+  if (step === 1) return <Boarding1 onNext={handleNext1} skipBoarding={handleSkip} />;
   if (step === 2) return <Boarding2 onNext={handleNext2} onBack={back} />;
   if (step === 3) return <Boarding3 onNext={handleNext3} onBack={back} />;
 

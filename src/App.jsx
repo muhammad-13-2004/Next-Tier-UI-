@@ -34,9 +34,9 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/boarding" element={<Boarding />} />
         <Route path="/certificate/:courseId" element={<CertificatePage />} />
         <Route element={<ProtectedRoute requireVerified />}>
+        <Route path="/boarding" element={<Boarding />} />
         <Route path="/dashboard/roadmaps/:slug/:id" element={<CourseReadingTab />} />
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<Main />} />
