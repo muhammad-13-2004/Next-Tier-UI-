@@ -22,7 +22,6 @@ export const api = {
   completeLesson:    (lessonId, payload) => apiClient.post(`/lessons/${lessonId}/complete`, payload),
 
   // AI Tutor
-  tutorChat:    (payload)  => apiClient.post("/ai-tutor/chat",payload),
-  tutorHistory: (lessonId) => apiClient.get(`/ai-tutor/history/${lessonId}`),
+  tutorChat:    (payload)  => apiClient.post("/ai-tutor",payload),
 
 };
