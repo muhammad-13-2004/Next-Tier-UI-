@@ -44,17 +44,24 @@ export const useOnboardingStore = create((set, get) => ({
   confirmAndSave: async (userId) => {
     const { interests, learningStyles, timeCommitment, goal } = get();
     await api.savePreferences({
-      user_id:              userId,
+      user_id: userId,
       interests,
-      learning_styles:      learningStyles,
-      time_commitment:      timeCommitment,
+      learning_styles: learningStyles,
+      time_commitment: timeCommitment,
       goal,
       onboarding_completed: true,
     });
   },
 
   skip: async (userId) => {
-    await api.skipOnboarding({ user_id: userId });
+    await api.savePreferences({
+      user_id: userId,
+      interests: null,
+      learning_styles: null,
+      time_commitment: null,
+      goal: null,
+      onboarding_completed: false,
+    });
   },
 
   reset: () => set({

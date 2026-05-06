@@ -1,6 +1,7 @@
 import { Book } from "lucide-react";
 
 export default function CourseCard({ course, onStart, loading = false }) {
+  
   const duration = course.duration ?? course.estimated_duration ?? "Flexible pace";
   const demand = course.demand ?? course.market_demand ?? "High demand";
   const complexity = course.complexity ?? course.level ?? "Beginner";

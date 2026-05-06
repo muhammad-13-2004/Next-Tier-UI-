@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Check, ChevronLeft, ChevronRight, Lock, Play } from 'lucide-react'
-import { ROADMAPS } from '@/utils/Roadmaps'
+import { useCourseStore } from '@/store/courseStore'
 
-function findLessonDetails(roadmapSlug, lessonId) {
-  const roadmap = ROADMAPS.find((item) => item.slug === roadmapSlug)
+function findLessonDetails(courses, roadmapSlug, lessonId) {
+  const roadmap = courses.find((item) => item.slug === roadmapSlug)
 
   if (roadmap) {
     for (const module of roadmap.modules) {
@@ -20,7 +20,7 @@ function findLessonDetails(roadmapSlug, lessonId) {
     }
   }
 
-  const fallbackRoadmap = ROADMAPS[0]
+  const fallbackRoadmap = courses[0]
   const fallbackModule = fallbackRoadmap?.modules?.[0]
   const fallbackLesson = fallbackModule?.lessons?.[0]
 
@@ -240,10 +240,11 @@ export default function CourseReadingTab() {
   const { slug, id } = useParams()
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('Reading')
+  const courses = useCourseStore((s) => s.courses)
 
   const { roadmap, module, lesson, lessonIndex } = useMemo(
-    () => findLessonDetails(slug, id),
-    [slug, id],
+    () => findLessonDetails(courses, slug, id),
+    [courses, slug, id],
   )
 
   const moduleLessons = module?.lessons ?? []

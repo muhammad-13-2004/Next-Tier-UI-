@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import RoadmapCard from '../features/roadmap/components/RoadmapCard'
 import RoadmapDetail from './RoadmapDetail'
-import { ROADMAPS } from '@/utils/Roadmaps'
+import { useCourseStore } from '@/store/courseStore'
 
 const FILTER_TABS = [
   { key: 'all', label: 'All' },
@@ -15,19 +15,32 @@ const MyRoadmaps = () => {
   const navigate = useNavigate()
   const { slug } = useParams()
   const [filter, setFilter] = useState('all')
+  const courses = useCourseStore((s) => s.courses)
+  const loadCourses = useCourseStore((s) => s.loadCourses)
+  const loading = useCourseStore((s) => s.loading)
+
+  useEffect(() => {
+    if (courses.length === 0) {
+      loadCourses()
+    }
+  }, [courses.length, loadCourses])
 
   const counts = FILTER_TABS.reduce((acc, t) => {
     acc[t.key] =
       t.key === 'all'
-        ? ROADMAPS.length
-        : ROADMAPS.filter((r) => r.status === t.key).length
+        ? courses.length
+        : courses.filter((r) => r.status === t.key).length
     return acc
   }, {})
 
   const visible =
-    filter === 'all' ? ROADMAPS : ROADMAPS.filter((r) => r.status === filter)
+    filter === 'all' ? courses : courses.filter((r) => r.status === filter)
 
-  const selectedRoadmap = slug ? ROADMAPS.find((r) => r.slug === slug) : null
+  const selectedRoadmap = slug ? courses.find((r) => r.slug === slug) : null
+
+  if (slug && loading) {
+    return <div className="min-h-screen pb-16" />
+  }
 
   if (selectedRoadmap) {
     return (
@@ -88,9 +101,6 @@ const MyRoadmaps = () => {
             You don't have any roadmaps in this category. Browse paths to get
             started.
           </p>
-          <button className="mt-5 bg-[#111] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#404040] transition-colors">
-            + Add Roadmap
-          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">

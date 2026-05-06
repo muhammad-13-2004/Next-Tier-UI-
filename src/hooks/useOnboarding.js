@@ -36,15 +36,16 @@ export function useOnboarding() {
         },
       });
 
-      const firstLessonId = course?.modules?.[0]?.lessons?.[0]?.id;
-      const resolvedSlug = course?.slug ?? courseSlug;
+      // const firstLessonId = course?.modules?.[0]?.lessons?.[0]?.id;
+      const resolvedSlug = course?.roadmap?.id ?? courseSlug;
 
       // 3. Clean up onboarding state
       store.reset();
 
       // 4. Navigate to the generated roadmap
-      if (firstLessonId && resolvedSlug) {
-        navigate(`/dashboard/roadmaps/${resolvedSlug}/${firstLessonId}`);
+      if (resolvedSlug) {
+        // navigate(`/dashboard/roadmaps/${resolvedSlug}/${firstLessonId}`);
+        navigate(`/dashboard/roadmaps/${resolvedSlug}`);
       } else {
         navigate("/dashboard/roadmaps");
       }
