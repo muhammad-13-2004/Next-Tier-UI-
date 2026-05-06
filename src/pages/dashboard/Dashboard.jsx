@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import DashboardLayout from '@/dashboard/layout/DashboardLayout'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useDashboard } from '@/hooks/useDashboard'
 
 const Dashboard = () => {
   const location = useLocation()
   const navigate = useNavigate()
+  const { loadDashboard } = useDashboard()
+
+  useEffect(() => {
+    loadDashboard()
+  }, [loadDashboard])
 
   const activeTab = (() => {
     const path = location.pathname

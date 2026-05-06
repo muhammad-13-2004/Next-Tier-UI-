@@ -1,4 +1,10 @@
+import { useDashboard } from "@/hooks/useDashboard";
+
 const FriendshipRankCard = () => {
+ const { profile } = useDashboard();
+ const fullName = profile?.full_name ?? "You";
+ const xp = profile?.xp ?? 0;
+
  return (
     <>
     <div className="bg-white rounded-3xl p-5 shadow-sm w-full max-w-sm">
@@ -28,13 +34,13 @@ const FriendshipRankCard = () => {
           
           <div>
             <p className="font-semibold text-gray-800 text-sm">
-              Muhammad A. (You)
+              {fullName} (You)
             </p>
           </div>
         </div>
 
         <p className="font-semibold text-gray-800 text-sm">
-          1,250 <span className="text-gray-500">XP</span>
+          {xp.toLocaleString()} <span className="text-gray-500">XP</span>
         </p>
       </div>
 

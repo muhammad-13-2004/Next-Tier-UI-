@@ -1,16 +1,30 @@
 import PathCard from '../../roadmap/components/PathCard'
-import { paths } from '../../../../utils/PapularPaths'
+import { paths as fallbackPaths } from '../../../../utils/PapularPaths'
 import { ArrowUpRight } from 'lucide-react'
 import { Button } from '../../../../components/ui/button'
+import { useDashboard } from '@/hooks/useDashboard'
 
 const filters = ['All', 'Coding', 'Design', 'Data', 'Marketing', 'Business']
 
 const LearningPathsSection = () => {
+  const { courses, loading, hasLoaded } = useDashboard()
+  const fallbackIcon = fallbackPaths[0]?.img
+  const learningPaths = courses.map((course) => ({
+    title: course.title ?? course.name ?? 'Untitled course',
+    duration: course.duration ?? course.time_commitment ?? 'Self paced',
+    modules: Array.isArray(course.modules)
+      ? course.modules.length
+      : course.modules_count ?? course.module_count ?? 0,
+    level: course.level ?? course.complexity ?? 'Beginner',
+    img: course.img ?? course.image_url ?? course.icon_url ?? fallbackIcon,
+    tags: Array.isArray(course.tags) ? course.tags : [course.status ?? 'Active'],
+  }))
+
   return (
     <div className="bg-(--background-color) shadow-sm rounded-3xl p-6">
       <div className="flex justify-between items-center mb-5">
         <h2 className="font-bold text-lg text-(--primary-color)">
-          Papular Learning Paths
+          Popular Learning Paths
         </h2>
 
         <Button variant="link" size="sm">
@@ -35,9 +49,24 @@ const LearningPathsSection = () => {
       </div>
 
       <div className="space-y-4">
-        {paths.map((path, index) => (
+        {loading && !hasLoaded ? (
+          <div className="rounded-2xl border border-(--border-color) p-5 text-sm text-(--subtext-color)">
+            Loading your learning paths...
+          </div>
+        ) : learningPaths.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-[#E5E7EB] p-8 text-center">
+            <h3 className="font-semibold text-(--primary-color)">
+              No courses yet
+            </h3>
+            <p className="mt-2 text-sm text-(--subtext-color)">
+              Start a roadmap and it will appear here.
+            </p>
+          </div>
+        ) : (
+          learningPaths.map((path, index) => (
           <PathCard key={index} path={path} />
-        ))}
+          ))
+        )}
       </div>
     </div>
   )

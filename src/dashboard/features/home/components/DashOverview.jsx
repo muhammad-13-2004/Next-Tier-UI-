@@ -1,14 +1,17 @@
 import React from "react";
 import { Button } from "../../../../components/ui/button";
-import { Dumbbell, Play, BookOpen, CalendarClock, Timer, Flame } from "lucide-react";
+import { Dumbbell, Play, BookOpen, CalendarClock, CircleCheck, Flame } from "lucide-react";
+import { useDashboard } from "@/hooks/useDashboard";
 
 const DashOverview = () => {
+  const { profile, stats: dashboardStats, loading } = useDashboard();
+  const firstName = profile?.full_name?.split(" ")?.[0] ?? "Learner";
 
   const stats = [
-    { icon: <BookOpen />, value: "12", label: "Courses Enrolled" },
-    { icon: <CalendarClock />, value: "3", label: "In Progress" },
-    { icon: <Timer />, value: "28h 40m", label: "Time Spent" },
-    { icon: <Flame />, value: "850", label: "XP Earned" },
+    { icon: <BookOpen />, value: dashboardStats?.total_courses ?? 0, label: "Courses Enrolled" },
+    { icon: <CalendarClock />, value: dashboardStats?.active_courses ?? 0, label: "In Progress" },
+    { icon: <CircleCheck />, value: dashboardStats?.completed_courses ?? 0, label: "Completed" },
+    { icon: <Flame />, value: profile?.xp ?? 0, label: "XP Earned" },
   ];
 
   return (
@@ -20,7 +23,7 @@ const DashOverview = () => {
         <div>
         {/* Heading */}
         <h1 className="text-5xl font-bold text-(--primary-color)">
-          Welcome back, <span className="text-(--secondary-color)">Muhammad</span>
+          Welcome back, <span className="text-(--secondary-color)">{firstName}</span>
         </h1>
 
         {/* Description */}
@@ -58,7 +61,7 @@ const DashOverview = () => {
 
             {/* Value */}
             <p className="text-2xl font-bold pt-3">
-              {item.value}
+              {loading ? "..." : item.value}
             </p>
 
             {/* Label */}
