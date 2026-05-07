@@ -16,6 +16,7 @@ import Community from "./dashboard/pages/Community";
 import Settings from "./dashboard/pages/Settings";
 import Career from "./dashboard/pages/Career";
 import CertificatePage from "./pages/public/CertificatePage";
+import AddRoadmap from "./dashboard/features/roadmap/components/AddRoadmap";
 
 
 
@@ -46,6 +47,7 @@ function App() {
           <Route path="community" element={<Community />} />
           <Route path="career" element={<Career />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="add-roadmap" element={<AddRoadmap />} />
         </Route>
         </Route>
       </Routes>
