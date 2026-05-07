@@ -13,8 +13,7 @@ export const api = {
   // Courses
   generateRoadmap: (payload) => apiClient.post("/generate-roadmap", payload),
   getCourses:       () => apiClient.get(`/courses`),
-  getCoursebyId:   (courseId) => apiClient.get(`/courses/${courseId}`),
-  // browseCourses:   (params)   => apiClient.get("/browse-courses", { params }),
+  getCoursebyId:   (courseId) => apiClient.get(`/get-coursebyId/${courseId}`),
 
   // Lessons
   generateContent:   (lessonId) => apiClient.post(`/lessons/${lessonId}/generate-content`),

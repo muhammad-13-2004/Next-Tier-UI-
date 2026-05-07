@@ -1,17 +1,82 @@
 import { create } from "zustand";
 import { api } from "@/services/api";
 
+const normalizeStatus = (status) => {
+  if (!status) return "saved";
+  return String(status).toLowerCase().replace(/_/g, "-");
+};
+
+const normalizeModuleStatus = (status) => {
+  const normalized = String(status ?? "").toLowerCase().replace(/_/g, "-");
+  if (normalized === "completed") return "completed";
+  if (normalized === "in-progress") return "in-progress";
+  if (normalized === "not-started") return "not-started";
+  return "locked";
+};
+
+const formatMinutes = (value) => {
+  const minutes = Number(value);
+  if (!Number.isFinite(minutes) || minutes <= 0) return "0m";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m}m`;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+};
+
+const normalizeLesson = (lesson, index) => ({
+  ...lesson,
+  id: lesson?.id ?? `lesson-${index + 1}`,
+  position: lesson?.position ?? index + 1,
+  status: normalizeModuleStatus(lesson?.status),
+});
+
+const normalizeModule = (module, index) => {
+  const lessons = Array.isArray(module?.lessons) ? module.lessons : [];
+  return {
+    ...module,
+    id: module?.id ?? `module-${index + 1}`,
+    title: module?.title ?? `Module ${index + 1}`,
+    subtitle: module?.subtitle ?? module?.short_description ?? "",
+    status: normalizeModuleStatus(module?.status),
+    position: module?.position ?? index + 1,
+    xp: Number(module?.xp ?? module?.xp_reward ?? 0),
+    time: module?.time ?? formatMinutes(module?.estimated_minutes),
+    lessons: lessons.map(normalizeLesson),
+  };
+};
+
 const normalizeCourse = (payload) => {
   if (!payload) return null;
 
-  const base = payload.roadmap ?? payload;
-  const slug = base.slug ?? base.id;
+  const base = payload.roadmap ?? payload.course ?? payload;
+  const id = base.id ?? base.course_id ?? base.courseId;
+  const slug = base.slug ?? (id != null ? String(id) : null);
 
   if (!base || !slug) return null;
 
+  const rawModules = Array.isArray(base.modules)
+    ? base.modules
+    : Array.isArray(payload?.modules)
+    ? payload.modules
+    : [];
+  const modules = rawModules.map(normalizeModule);
+  const totalModules = base.total_modules ?? modules.length ?? 0;
+  const completedModules =
+    base.completed_modules ??
+    modules.filter((m) => m?.status === "completed").length ??
+    0;
+
   return {
     ...base,
+    id: id ?? slug,
     slug,
+    status: normalizeStatus(base.status),
+    subtitle: base.subtitle ?? base.short_description ?? "",
+    progress: Number(base.progress ?? 0),
+    total_modules: totalModules,
+    completed_modules: completedModules,
+    modules,
     course_id: payload.course_id ?? base.course_id ?? base.courseId ?? null,
   };
 };
@@ -34,7 +99,7 @@ export const useCourseStore = create((set) => ({
   loadCourses: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await api.browseCourses();
+      const response = await api.getCourses();
       const rawCourses = extractCourseList(response);
       const normalized = rawCourses.map(normalizeCourse).filter(Boolean);
       set({ courses: normalized, loading: false });
@@ -70,10 +135,17 @@ export const useCourseStore = create((set) => ({
   loadCourse: async (courseId) => {
     set({ loading: true, error: null });
     try {
-      const response = await api.getCourse(courseId);
+      const response = await api.getCoursebyId(courseId);
       const course = normalizeCourse(response);
       if (!course) throw new Error("Invalid course response.");
-      set({ activeCourse: course, loading: false });
+      set((state) => ({
+        activeCourse: course,
+        courses: [
+          course,
+          ...state.courses.filter((c) => String(c.slug) !== String(course.slug)),
+        ],
+        loading: false,
+      }));
     } catch (err) {
       set({ error: err.message, loading: false });
     }

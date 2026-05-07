@@ -109,7 +109,7 @@ const Sidebar = ({ collapsed, setCollapsed, activeTab, onTabChange }) => {
           </div>
           {!collapsed && (
             <p className="mt-3 text-xs text-(--subtext-color)">
-              {creditProgressLabel}% of the daily limit used
+              {creditProgressLabel}% of the daily limit left
             </p>
           )}
           {collapsed && (

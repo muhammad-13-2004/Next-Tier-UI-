@@ -18,13 +18,14 @@ const ModuleAccordion = ({ module, roadmapSlug, defaultOpen = false }) => {
 
     const done = module.status === "completed";
     const active = module.status === "in-progress";
+    const notStarted = module.status === "not-started";
     const locked = module.status === "locked";
 
     return (
         <div className={`rounded-2xl border overflow-hidden transition-all duration-200
         ${active ? "border-[#7AE84A] shadow-[0_0_0_2px_rgba(122,232,74,0.2)] bg-white"
                 : done ? "border-[#EBEBEB] bg-white"
-                    : "border-[#EBEBEB] bg-white opacity-60"}`}>
+                    : "border-[#EBEBEB] bg-white"}`}>
 
             {/* Header row */}
             <button
@@ -37,6 +38,8 @@ const ModuleAccordion = ({ module, roadmapSlug, defaultOpen = false }) => {
                     <CheckCircle2 size={18} className="text-emerald-600" />
                 ) : active ? (
                     <PlayCircle size={18} className="text-[#5BC932]" />
+                ) : notStarted ? (
+                    <PlayCircle size={18} className="text-[#A3A3A3]" />
                 ) : (
                     <Lock size={18} className="text-[#A3A3A3]" />
                 )}
@@ -65,7 +68,7 @@ const ModuleAccordion = ({ module, roadmapSlug, defaultOpen = false }) => {
                 ${done ? "bg-[#D1FAE5] text-[#065f46]"
                             : active ? "bg-[#7AE84A] text-black"
                                 : "bg-[#EBEBEB] text-[#A3A3A3]"}`}>
-                        {done ? "Completed" : active ? "In Progress" : "Locked"}
+                        {done ? "Completed" : active ? "In Progress" : notStarted ? "Not Started" : "Locked"}
                     </span>
                 </div>
 

@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import RoadmapCard from '../features/roadmap/components/RoadmapCard'
 import RoadmapDetail from './RoadmapDetail'
 import { useCourseStore } from '@/store/courseStore'
+import LoadingImage from '@/assets/nexttier-icon.png'
 
 const FILTER_TABS = [
   { key: 'all', label: 'All' },
   { key: 'in-progress', label: 'In Progress' },
   { key: 'completed', label: 'Completed' },
-  { key: 'saved', label: 'Saved' },
+  { key: 'not-started', label: 'Saved' },
 ]
 
 const MyRoadmaps = () => {
@@ -17,13 +18,32 @@ const MyRoadmaps = () => {
   const [filter, setFilter] = useState('all')
   const courses = useCourseStore((s) => s.courses)
   const loadCourses = useCourseStore((s) => s.loadCourses)
+  const loadCourse = useCourseStore((s) => s.loadCourse)
+  const activeCourse = useCourseStore((s) => s.activeCourse)
   const loading = useCourseStore((s) => s.loading)
+  const requestedSlugRef = useRef(null)
 
   useEffect(() => {
     if (courses.length === 0) {
       loadCourses()
     }
   }, [courses.length, loadCourses])
+
+  useEffect(() => {
+    if (!slug) return
+    if (requestedSlugRef.current === String(slug)) return
+
+    const selected = courses.find((r) => String(r.slug) === String(slug))
+    const alreadyHasDetails =
+      (selected?.modules?.length ?? 0) > 0 ||
+      ((activeCourse?.modules?.length ?? 0) > 0 &&
+        String(activeCourse?.slug) === String(slug))
+
+    if (alreadyHasDetails) return
+
+    requestedSlugRef.current = String(slug)
+    loadCourse(slug)
+  }, [slug, courses, activeCourse, loadCourse])
 
   const counts = FILTER_TABS.reduce((acc, t) => {
     acc[t.key] =
@@ -36,10 +56,36 @@ const MyRoadmaps = () => {
   const visible =
     filter === 'all' ? courses : courses.filter((r) => r.status === filter)
 
-  const selectedRoadmap = slug ? courses.find((r) => r.slug === slug) : null
+  const selectedFromList = slug
+    ? courses.find((r) => String(r.slug) === String(slug))
+    : null
+  const selectedFromActive =
+    slug && String(activeCourse?.slug) === String(slug) ? activeCourse : null
+
+  const selectedRoadmap =
+    slug
+      ? (selectedFromActive?.modules?.length ? selectedFromActive : selectedFromList) ??
+        selectedFromActive ??
+        null
+      : null
 
   if (slug && loading) {
-    return <div className="min-h-screen pb-16" />
+    return (
+      <div className="min-h-screen pb-16 flex items-center justify-center">
+        <img
+          src={LoadingImage}
+          alt="Loading roadmap"
+          className="w-24 h-24 object-contain"
+          style={{ animation: 'pulse-scale 1.5s ease-in-out infinite' }}
+        />
+        <style>{`
+          @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+          }
+        `}</style>
+      </div>
+    )
   }
 
   if (selectedRoadmap) {
