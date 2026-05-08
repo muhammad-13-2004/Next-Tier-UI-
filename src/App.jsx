@@ -16,6 +16,7 @@ import Community from "./dashboard/pages/Community";
 import Settings from "./dashboard/pages/Settings";
 import Career from "./dashboard/pages/Career";
 import CertificatePage from "./pages/public/CertificatePage";
+import NotFound from "./pages/public/NotFound";
 import AddRoadmap from "./dashboard/features/roadmap/components/AddRoadmap";
 
 
@@ -35,21 +36,33 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/boarding" element={<Boarding />} />
-        <Route path="/certificate/:courseId" element={<CertificatePage />} />
+
+        <Route
+          element={
+            <ProtectedRoute
+              requireVerified
+              blockWhenOnboardingCompleted
+            />
+          }
+        >
+          <Route path="/boarding" element={<Boarding />} />
+        </Route>
+
         <Route element={<ProtectedRoute requireVerified />}>
-        <Route path="/dashboard/roadmaps/:slug/:id" element={<CourseReadingTab />} />
-        <Route path="/dashboard" element={<Dashboard />}>
-          <Route index element={<Main />} />
-          <Route path="roadmaps" element={<MyRoadmaps />} />
-          <Route path="roadmaps/:slug" element={<MyRoadmaps />} />
-          <Route path="ai-tutor" element={<AiTutor />} />
-          <Route path="community" element={<Community />} />
-          <Route path="career" element={<Career />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="add-roadmap" element={<AddRoadmap />} />
+          <Route path="/dashboard/roadmaps/:slug/:id" element={<CourseReadingTab />} />
+          <Route path="/dashboard/roadmaps/certificate/:courseId" element={<CertificatePage />} />
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route index element={<Main />} />
+            <Route path="roadmaps" element={<MyRoadmaps />} />
+            <Route path="add-roadmap" element={<AddRoadmap />} />
+            <Route path="roadmaps/:slug" element={<MyRoadmaps />} />
+            <Route path="ai-tutor" element={<AiTutor />} />
+            <Route path="community" element={<Community />} />
+            <Route path="career" element={<Career />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
         </Route>
-        </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

@@ -112,7 +112,7 @@ const interests = [
   },
 ]
 
-export default function Boarding1({ onNext }) {
+export default function Boarding1({ onNext, skipBoarding }) {
   const [selected, setSelected] = useState(new Set(['coding']))
 
   const toggle = (id) => {
@@ -219,13 +219,13 @@ export default function Boarding1({ onNext }) {
               />
             </svg>
           </button>
-          <button className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm hover:bg-gray-50 transition-colors">
+          <button onClick={() => skipBoarding()} className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm hover:bg-gray-50 transition-colors">
             Skip, I Know What To Learn
           </button>
         </div>
       </main>
 
-      <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
+      {/* <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
         © 2025 NextTier ·{' '}
         <a href="#" className="underline hover:text-gray-600">
           Privacy
@@ -236,7 +236,7 @@ export default function Boarding1({ onNext }) {
         </a>
         {' · '}
         Built with <span className="text-red-500">♥</span> for curious minds
-      </footer>
+      </footer> */}
     </div>
   )
 }

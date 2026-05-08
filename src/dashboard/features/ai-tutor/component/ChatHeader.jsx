@@ -9,16 +9,22 @@ const ChatHeader = ({ onClear, onNewChat }) => {
       </div>
 
       <div className="flex gap-2">
-        <button onClick={onClear} className="px-3 py-1 text-sm border rounded-lg " >
+        <button
+          onClick={onClear}
+          className="px-3 py-1 text-sm border rounded-lg "
+        >
           Clear chat
         </button>
 
-        <button onClick={onNewChat} className="px-3 py-1 text-sm bg-(--primary-color) text-(--background-color) rounded-lg" >
+        <button
+          onClick={onNewChat}
+          className="px-3 py-1 text-sm bg-(--primary-color) text-(--background-color) rounded-lg"
+        >
           New chat +
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatHeader;
+export default ChatHeader

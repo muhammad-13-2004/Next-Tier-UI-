@@ -1,7 +1,11 @@
 import botIcon from "@/assets/nexttier-icon.png";
 import { Button } from "../../../../components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const AiTutorCard = () => {
+
+    const navigate = useNavigate();
+
     return (
       <div className="bg-(--background-color) rounded-3xl p-5">
         
@@ -14,7 +18,7 @@ const AiTutorCard = () => {
           Not sure where to start? I’ll find the right path in seconds.
         </p>
   
-        <Button variant = "default" size='lg' className='w-full'>
+        <Button onClick={() => navigate('/dashboard/ai-tutor')} variant = "default" size='lg' className='w-full' >
           Chat with Owly
         </Button>
       </div>

@@ -1,4 +1,12 @@
+import { useDashboard } from "@/hooks/useDashboard";
+
 const FriendshipRankCard = () => {
+  
+ const { profile } = useDashboard();
+ const fullName = profile?.full_name ?? "You";
+ const xp = profile?.xp ?? 0;
+ const avatar = profile?.avatar_url;
+
  return (
     <>
     <div className="bg-white rounded-3xl p-5 shadow-sm w-full max-w-sm">
@@ -18,58 +26,27 @@ const FriendshipRankCard = () => {
       {/* Your Rank */}
       <div className="flex items-center justify-between bg-green-50 rounded-2xl p-3 mb-4">
         <div className="flex items-center gap-3">
-          <span className="font-bold text-lg">3</span>
+          <span className="font-bold text-lg">1</span>
           
           <img
-            src="https://i.pravatar.cc/40"
+            src={avatar}
             alt="profile"
             className="w-10 h-10 rounded-full"
           />
           
           <div>
             <p className="font-semibold text-gray-800 text-sm">
-              Muhammad A. (You)
+              {fullName} (You)
             </p>
           </div>
         </div>
 
         <p className="font-semibold text-gray-800 text-sm">
-          1,250 <span className="text-gray-500">XP</span>
+          {xp.toLocaleString()} <span className="text-gray-500">XP</span>
         </p>
       </div>
 
       {/* Rank List */}
-      <div className="space-y-4">
-        
-        {/* Rank 1 */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-gray-400 font-bold">1</span>
-            <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-            <p className="text-gray-700 text-sm font-medium">
-              Sarah Jenkins
-            </p>
-          </div>
-          <p className="text-gray-700 text-sm font-semibold">
-            1,540 <span className="text-gray-400">XP</span>
-          </p>
-        </div>
-
-        {/* Rank 2 */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-gray-400 font-bold">2</span>
-            <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-            <p className="text-gray-700 text-sm font-medium">
-              Alex Rivera
-            </p>
-          </div>
-          <p className="text-gray-700 text-sm font-semibold">
-            1,390 <span className="text-gray-400">XP</span>
-          </p>
-        </div>
-
-      </div>
 
       {/* Footer */}
       <div className="text-center mt-6">

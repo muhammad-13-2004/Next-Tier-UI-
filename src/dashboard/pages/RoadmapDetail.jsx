@@ -1,12 +1,37 @@
 import React from "react";
 import { ArrowLeft, TrendingUp } from "lucide-react";
 import ModuleAccordion from "@/dashboard/features/roadmap/components/ModuleAccordion";
+import LoadingImage from "@/assets/nexttier-icon.png";
 
 const RoadmapDetail = ({ roadmap, onBack }) => {
     
     if (!roadmap) return null;
 
-    const doneCount = roadmap.modules.filter(m => m.status === "completed").length;
+    const modules = Array.isArray(roadmap.modules) ? roadmap.modules : [];
+    const doneCount =
+      roadmap.completed_modules ?? modules.filter(m => m.status === "completed").length;
+    const totalCount = roadmap.total_modules ?? modules.length;
+
+    if (modules.length === 0) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <img
+                    src={LoadingImage}
+                    alt="Loading roadmap"
+                    className="w-16 h-16 object-contain"
+                    style={{ animation: 'pulse-scale 1.5s ease-in-out infinite' }}
+                />
+                <style>{`
+                    @keyframes pulse-scale {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.08); }
+                    }
+                `}</style>
+            </div>
+        );
+    }
+
+    console.log("Module data :", modules);
 
     return (
         <div className="min-h-screen">
@@ -43,17 +68,17 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                             style={{ width: `${roadmap.progress}%`, background: roadmap.accentColor }}
                         />
                     </div>
-                    <p className="text-xs text-[#A3A3A3] mt-1.5">{doneCount} of {roadmap.modules.length} modules done</p>
+                    <p className="text-xs text-[#A3A3A3] mt-1.5">{doneCount} of {totalCount} modules done</p>
                 </div>
             </div>
 
             {/* Modules */}
             <div className="py-6 flex flex-col gap-3">
-                {roadmap.modules.map(mod => (
+                {modules.map(mod => (
                     <ModuleAccordion
                         key={mod.id}
                         module={mod}
-                        roadmapSlug={roadmap.slug}
+                        roadmapSlug={roadmap.id}
                         defaultOpen={mod.status === "in-progress"}
                     />
                 ))}

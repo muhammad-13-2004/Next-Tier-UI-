@@ -10,24 +10,27 @@ const CARD_ICONS = {
 };
 
 const STATUS_META = {
+  "not-started": { label: "Saved", pill: "bg-[#F4F4F4] text-[#737373]" },
   "in-progress": { label: "In Progress", pill: "bg-[#F2FCE8] text-[#3a7a1a]" },
   completed: { label: "Completed", pill: "bg-[#D1FAE5] text-[#065f46]" },
-  saved: { label: "Saved", pill: "bg-[#F4F4F4] text-[#737373]" },
-  locked: { label: "Locked", pill: "bg-[#F4F4F4] text-[#A3A3A3]" },
 };
 
 
 const RoadmapCard = ({ roadmap, onClick }) => {
 
+  const modules = Array.isArray(roadmap.modules) ? roadmap.modules : [];
+  const doneCount =
+    roadmap.completed_modules ??
+    modules.filter((m) => m.status === "completed").length;
+  const totalCount = roadmap.total_modules ?? modules.length;
 
   const Icon = CARD_ICONS[roadmap.iconName] || BookOpen;
   const meta = STATUS_META[roadmap.status] || STATUS_META.saved;
-  const doneCount = roadmap.modules.filter(m => m.status === "completed").length;
 
   const barColor =
     roadmap.status === "completed" ? "#10b981"
       : roadmap.status === "saved" ? "#D4D4D4"
-        : roadmap.accentColor;
+        : (roadmap.accentColor || "#7AE84A");
 
   const actionLabel =
     roadmap.status === "in-progress" ? "Resume"
@@ -45,8 +48,8 @@ const RoadmapCard = ({ roadmap, onClick }) => {
     roadmap.status === "saved" ? "Not started yet"
       : roadmap.status === "completed" ? "Certificate earned"
         : (() => {
-          const m = roadmap.modules.find(x => x.status === "in-progress");
-          return m ? `${m.time} in current module` : "";
+          const m = modules.find(x => x.status === "in-progress");
+          return m ? `${m.time} in current module` : `${doneCount} / ${totalCount} modules done`;
         })();
 
   return (
@@ -80,7 +83,7 @@ const RoadmapCard = ({ roadmap, onClick }) => {
         {/* Progress bar */}
         <div>
           <div className="flex justify-between text-xs mb-1.5">
-            <span className="text-[#A3A3A3]">{doneCount} / {roadmap.modules.length} modules</span>
+            <span className="text-[#A3A3A3]">{doneCount} / {totalCount} modules</span>
             <span className="font-bold text-[#111]">{roadmap.progress}%</span>
           </div>
           <div className="h-1.5 bg-[#F4F4F4] rounded-full overflow-hidden">
