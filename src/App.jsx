@@ -17,6 +17,8 @@ import Settings from "./dashboard/pages/Settings";
 import Career from "./dashboard/pages/Career";
 import CertificatePage from "./pages/public/CertificatePage";
 import NotFound from "./pages/public/NotFound";
+import AddRoadmap from "./dashboard/features/roadmap/components/AddRoadmap";
+
 
 
 function App() {
@@ -52,6 +54,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<Main />} />
             <Route path="roadmaps" element={<MyRoadmaps />} />
+            <Route path="add-roadmap" element={<AddRoadmap />} />
             <Route path="roadmaps/:slug" element={<MyRoadmaps />} />
             <Route path="ai-tutor" element={<AiTutor />} />
             <Route path="community" element={<Community />} />
