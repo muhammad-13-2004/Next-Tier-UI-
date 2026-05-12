@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import supabase from "@/services/supabase";
+import { useOnboardingStore } from "@/store/onboardingStore";
 
 export const useAuthStore = create((set, get) => ({
 
@@ -8,7 +9,10 @@ export const useAuthStore = create((set, get) => ({
   loading:     true,
   initialized: false,
 
-  setUser: (user) => set({ user }),
+  setUser: (user) =>
+    set({
+      user,
+    }),
 
   initAuth: () => {
 
@@ -17,8 +21,14 @@ export const useAuthStore = create((set, get) => ({
     set({ initialized: true });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      const user = session?.user ?? null;
+      const persistedCompleted =
+        typeof user?.user_metadata?.onboarding_completed === "boolean"
+          ? user.user_metadata.onboarding_completed
+          : false;
+      useOnboardingStore.getState().setCompleted(persistedCompleted);
       set({
-        user: session?.user ?? null,
+        user,
         accessToken: session?.access_token ?? null,
         loading: false,
       });
@@ -26,8 +36,14 @@ export const useAuthStore = create((set, get) => ({
  
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
+        const user = session?.user ?? null;
+        const persistedCompleted =
+          typeof user?.user_metadata?.onboarding_completed === "boolean"
+            ? user.user_metadata.onboarding_completed
+            : false;
+        useOnboardingStore.getState().setCompleted(persistedCompleted);
         set({
-          user: session?.user ?? null,
+          user,
           accessToken: session?.access_token ?? null,
           loading: false,
         });
@@ -39,6 +55,10 @@ export const useAuthStore = create((set, get) => ({
 
   logout: async () => {
     await supabase.auth.signOut();
-    set({ user: null, accessToken: null, initialized: false });
+    set({
+      user: null,
+      accessToken: null,
+      initialized: false,
+    });
   },
 }));

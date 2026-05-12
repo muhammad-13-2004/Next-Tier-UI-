@@ -7,12 +7,12 @@ const LessonRow = ({ lesson, num, roadmapSlug }) => {
 
   const done = lesson.status === 'completed'
   const active = lesson.status === 'in-progress'
-  const locked = lesson.status === 'locked'
+  const notstarted = lesson.status === 'not-started'
 
   return (
     <div
       className={`flex items-center gap-3 py-3 rounded-xl px-2 transition-colors
-        ${locked ? 'opacity-50 cursor-default' : 'cursor-pointer hover:bg-[#F9F9F9]'}`}
+        ${notstarted ? 'opacity-50 cursor-default' : 'cursor-pointer hover:bg-[#F9F9F9]'}`}
     >
       {/* Num bubble */}
       <div
@@ -30,25 +30,23 @@ const LessonRow = ({ lesson, num, roadmapSlug }) => {
 
       <span
         className={`flex-1 text-sm font-medium leading-snug ${
-          locked ? 'text-[#C4C4C4]' : 'text-[#111]'
+          notstarted ? 'text-[#C4C4C4]' : 'text-[#111]'
         }`}
       >
         {lesson.title}
       </span>
 
-      {active && (
+      {/* {notstarted && ( */}
         <span
           onClick={() => navigate(`/dashboard/roadmaps/${roadmapSlug}/${lesson.id}`)}
-          className="text-xs font-bold text-[#5BC932] whitespace-nowrap cursor-pointer"
+          className="text-xs font-bold text-[#5BC932] whitespace-nowrap cursor-pointer hover:underline"
         >
           <span className="inline-flex items-center gap-1">
             <Play size={12} />
             {lesson.resumeLabel || 'Resume'}
           </span>
         </span>
-      )}
-
-      {locked && <Lock size={14} className="text-[#C4C4C4]" />}
+      {/* )} */}
     </div>
   )
 }

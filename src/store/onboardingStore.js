@@ -13,6 +13,7 @@ export const useOnboardingStore = create((set, get) => ({
   recommendations: [],
   loading:         false,
   error:           null,
+  isCompleted:     null,
 
   setInterests:      (v) => set({ interests: v }),
   setLearningStyles: (v) => set({ learningStyles: v }),
@@ -20,6 +21,7 @@ export const useOnboardingStore = create((set, get) => ({
   setGoal:           (v) => set({ goal: v }),
   setLoading:        (v) => set({ loading: v }),
   setError:          (v) => set({ error: v }),
+  setCompleted:      (v) => set({ isCompleted: Boolean(v) }),
 
 
   // recommendCourses 
@@ -51,6 +53,7 @@ export const useOnboardingStore = create((set, get) => ({
       goal,
       onboarding_completed: true,
     });
+    set({ isCompleted: true });
   },
 
   skip: async (userId) => {
@@ -62,6 +65,7 @@ export const useOnboardingStore = create((set, get) => ({
       goal: null,
       onboarding_completed: false,
     });
+    set({ isCompleted: false });
   },
 
   reset: () => set({

@@ -16,10 +16,10 @@ export const api = {
   getCoursebyId:   (courseId) => apiClient.get(`/get-coursebyId/${courseId}`),
 
   // Lessons
-  generateContent:   (lessonId) => apiClient.post(`/lessons/${lessonId}/generate-content`),
-  generateQuiz:      (lessonId) => apiClient.post(`/lessons/${lessonId}/generate-quiz`),
-  generateChallenge: (lessonId) => apiClient.post(`/lessons/${lessonId}/generate-challenge`),
-  completeLesson:    (lessonId, payload) => apiClient.post(`/lessons/${lessonId}/complete`, payload),
+  generateContent:   (payload) => apiClient.post("/generate-content", payload),
+  generateQuiz:      (payload) => apiClient.post("/generate-quiz", payload),
+  // generateChallenge: (lessonId) => apiClient.post(`/lessons/${lessonId}/generate-challenge`),
+  completeLesson:    (payload) => apiClient.post("/complete-lesson", payload),
 
   // AI Tutor
   tutorChat:    (payload)  => apiClient.post("/ai-tutor",payload),
