@@ -120,10 +120,10 @@ const Sidebar = ({ collapsed, setCollapsed, activeTab, onTabChange }) => {
         </div>
         <button
           onClick={() => onTabChange('settings')}
-          className={`w-full flex items-center gap-2 p-3 rounded-xl transition ${
+          className={`w-full flex items-center gap-2 p-3 mt-3 rounded-xl transition ${
             activeTab === 'settings'
-              ? 'bg-(--secondary-color)/20 text-(--primary-color)'
-              : 'hover:bg-(--secondary-color)/10 text-(--subtext-color)'
+             ? 'bg-(--primary-color)/6 text-(--primary-color)'
+              : 'hover:bg-(--primary-color)/6 text-(--subtext-color)'
           }`}
         >
           <Settings className="w-5 h-5" />

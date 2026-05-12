@@ -1,27 +1,18 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
-
-const isOnboardingCompleted = (user) => {
-
-  const preferences = user?.user_metadata?.preferences ?? user?.app_metadata?.preferences;
-
-  if (typeof preferences?.onboarding === "boolean") {
-    return preferences.onboarding;
-  }
-
-  if (typeof user?.user_metadata?.onboarding_completed === "boolean") {
-    return user.user_metadata.onboarding_completed;
-  }
-
-  return false;
-};
+import { useOnboardingStore } from "@/store/onboardingStore";
 
 const ProtectedRoute = ({
   requireVerified = false,
   blockWhenOnboardingCompleted = false,
 }) => {
   const { user, loading } = useAuthStore();
+  const isCompleted = useOnboardingStore((s) => s.isCompleted);
+  const onboardingCompleted =
+    typeof isCompleted === "boolean"
+      ? isCompleted
+      : Boolean(user?.user_metadata?.onboarding_completed);
 
   if (loading) {
     return (
@@ -39,7 +30,7 @@ const ProtectedRoute = ({
     return <Navigate to="/verify-email" replace />;
   }
 
-  if (blockWhenOnboardingCompleted && isOnboardingCompleted(user)) {
+  if (blockWhenOnboardingCompleted && onboardingCompleted) {
     return <Navigate to="/dashboard" replace />;
   }
 

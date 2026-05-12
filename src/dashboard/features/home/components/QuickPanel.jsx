@@ -9,7 +9,7 @@ const QuickPanel = () => {
       <SetupCard />
       <FriendshipRankCard />
       <AiTutorCard />
-      <InternshipCard />
+      {/* <InternshipCard /> */}
     </div>
   );
 };

@@ -24,7 +24,7 @@ const LearningPathsSection = () => {
     <div className="bg-(--background-color) shadow-sm rounded-3xl p-6">
       <div className="flex justify-between items-center mb-5">
         <h2 className="font-bold text-lg text-(--primary-color)">
-          Popular Learning Paths
+          Recent Learning Paths
         </h2>
 
         <Button variant="link" size="sm">
