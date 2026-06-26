@@ -62,7 +62,7 @@ export default function CourseCard({ course, onStart, loading = false }) {
           </span>
       </div>
 
-      {/* CTA */}
+        {/* CTA Banner */}
       <button
         onClick={() => onStart?.(course.slug)}
         disabled={loading}
