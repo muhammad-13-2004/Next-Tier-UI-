@@ -52,7 +52,9 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                     <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight leading-tight mb-2">
                         {roadmap.title}
                     </h1>
-                    <p className="text-sm text-[#737373] max-w-xl leading-relaxed">{roadmap.subtitle}</p>
+                    <p className="text-sm text-[#737373] max-w-xl leading-relaxed">
+                        {roadmap.subtitle}
+                    </p>
                 </div>
 
                 {/* Progress */}

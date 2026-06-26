@@ -14,6 +14,13 @@ const normalizeModuleStatus = (status) => {
   return "locked";
 };
 
+const pickText = (...values) => {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim().length > 0) return value;
+  }
+  return "";
+};
+
 const formatMinutes = (value) => {
   const minutes = Number(value);
   if (!Number.isFinite(minutes) || minutes <= 0) return "0m";
@@ -29,6 +36,12 @@ const normalizeLesson = (lesson, index) => ({
   id: lesson?.id ?? `lesson-${index + 1}`,
   position: lesson?.position ?? index + 1,
   status: normalizeModuleStatus(lesson?.status),
+  subtitle: pickText(
+    lesson?.subtitle,
+    lesson?.short_description,
+    lesson?.shortDescription,
+    lesson?.description
+  ),
 });
 
 const normalizeModule = (module, index) => {
@@ -37,12 +50,19 @@ const normalizeModule = (module, index) => {
     ...module,
     id: module?.id ?? `module-${index + 1}`,
     title: module?.title ?? `Module ${index + 1}`,
-    subtitle: module?.subtitle ?? module?.short_description ?? "",
+    subtitle: pickText(
+      module?.subtitle,
+      module?.short_description,
+      module?.shortDescription,
+      module?.description
+    ),
     status: normalizeModuleStatus(module?.status),
     position: module?.position ?? index + 1,
     xp: Number(module?.xp ?? module?.xp_reward ?? 0),
     time: module?.time ?? formatMinutes(module?.estimated_minutes),
-    lessons: lessons.map(normalizeLesson),
+    lessons: lessons
+      .map(normalizeLesson)
+      .sort((a, b) => Number(a?.position ?? 0) - Number(b?.position ?? 0)),
   };
 };
 
@@ -60,7 +80,9 @@ const normalizeCourse = (payload) => {
     : Array.isArray(payload?.modules)
     ? payload.modules
     : [];
-  const modules = rawModules.map(normalizeModule);
+  const modules = rawModules
+    .map(normalizeModule)
+    .sort((a, b) => Number(a?.position ?? 0) - Number(b?.position ?? 0));
   const totalModules = base.total_modules ?? modules.length ?? 0;
   const completedModules =
     base.completed_modules ??
@@ -72,7 +94,12 @@ const normalizeCourse = (payload) => {
     id: id ?? slug,
     slug,
     status: normalizeStatus(base.status),
-    subtitle: base.subtitle ?? base.short_description ?? "",
+    subtitle: pickText(
+      base?.subtitle,
+      base?.short_description,
+      base?.shortDescription,
+      base?.description
+    ),
     progress: Number(base.progress ?? 0),
     total_modules: totalModules,
     completed_modules: completedModules,

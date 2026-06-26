@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Sparkles, Lock, Info, Check } from "lucide-react";
+import LoadingImage from "@/assets/nexttier-icon.png";
+import CourseCard from "@/components/boarding/CourseCard";
+import { useAuthStore } from "@/store/authStore";
+import { useOnboardingStore } from "@/store/onboardingStore";
+import { useCourseStore } from "@/store/courseStore";
+import { api } from "@/services/api";
 
 const AddRoadmap = () => {
   const navigate = useNavigate();
@@ -9,12 +15,120 @@ const AddRoadmap = () => {
   const [level, setLevel] = useState("");
   const [timeCommitment, setTimeCommitment] = useState("");
   const [goal, setGoal] = useState("");
+  const [status, setStatus] = useState("idle"); // idle | loadingRecommendations | recommendations | generatingManual | generatingSelected
+  const [recommendations, setRecommendations] = useState([]);
+  const [error, setError] = useState("");
+  const [selectedSlug, setSelectedSlug] = useState("");
 
-  const handleGenerate = () => {
+  const user = useAuthStore((s) => s.user);
+  const onboarding = useOnboardingStore();
+  const generateRoadmap = useCourseStore((s) => s.generateRoadmap);
+
+  const toArray = (value) => {
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (typeof value === "string" && value.trim()) return [value.trim()];
+    return [];
+  };
+
+  const metadataPreferences = user?.user_metadata?.preferences ?? {};
+
+  const resolvePreferencePayload = () => ({
+    // Match the edge function contract exactly:
+    // { interests, learning_style, time_commitment, goal }
+    interests: toArray(
+      onboarding.interests?.length > 0
+        ? onboarding.interests
+        : metadataPreferences?.interests ?? user?.user_metadata?.interests
+    ),
+    learning_style: toArray(
+      onboarding.learningStyles?.length > 0
+        ? onboarding.learningStyles
+        : metadataPreferences?.learning_style ??
+          metadataPreferences?.learning_styles ??
+          user?.user_metadata?.learning_styles
+    ),
+    time_commitment:
+      onboarding.timeCommitment ??
+      metadataPreferences?.time_commitment ??
+      user?.user_metadata?.time_commitment ??
+      "30 minutes",
+    goal:
+      onboarding.goal ??
+      metadataPreferences?.goal ??
+      user?.user_metadata?.goal ??
+      "Get a job",
+  });
+
+  const handleGenerate = async () => {
+    setError("");
+
     if (mode === "manual") {
-      console.log({ prompt, level, timeCommitment, goal });
-    } else {
-      console.log("Generating from preferences...");
+      if (!prompt.trim()) return;
+      setStatus("generatingManual");
+      try {
+        const course = await generateRoadmap({
+          input: prompt.trim(),
+          level: level || "Beginner",
+          time: timeCommitment || "30 minutes",
+          goal: goal || "Learn for fun",
+        });
+        const resolvedSlug = course?.slug ?? course?.id;
+        navigate(resolvedSlug ? `/dashboard/roadmaps/${resolvedSlug}` : "/dashboard/roadmaps");
+      } catch (err) {
+        setError(err?.message ?? "Could not generate roadmap from manual input.");
+        setStatus("idle");
+      }
+      return;
+    }
+
+    // Preferences flow
+    if (!user?.id) {
+      setError("Please login again to generate roadmap from preferences.");
+      return;
+    }
+
+    setStatus("loadingRecommendations");
+    try {
+      const payload = resolvePreferencePayload();
+      if (!payload.interests.length) payload.interests = ["technology"];
+      if (!payload.goal) payload.goal = "Get a job";
+
+      const data = await api.recommendCourses(payload);
+      const recs = Array.isArray(data?.recommendations)
+        ? data.recommendations
+        : [];
+      setRecommendations(recs);
+      setStatus("recommendations");
+    } catch (err) {
+      setError(err?.message ?? "Could not fetch recommendations.");
+      setStatus("idle");
+    }
+  };
+
+  const handleStartRecommended = async (courseSlug) => {
+    setSelectedSlug(courseSlug);
+    setStatus("generatingSelected");
+    setError("");
+
+    try {
+      const selectedCourse = recommendations.find((c) => c.slug === courseSlug);
+      const pref = resolvePreferencePayload();
+      const course = await generateRoadmap({
+        mode: "recommendation",
+        input: {
+          title: selectedCourse?.title ?? courseSlug,
+          complexity: selectedCourse?.complexity ?? selectedCourse?.level ?? level ?? "beginner",
+          goal: pref.goal ?? goal ?? "Learn for fun",
+          time_commitment: pref.time_commitment ?? timeCommitment ?? "30 minutes",
+        },
+      });
+      const resolvedSlug = course?.slug ?? course?.id;
+      navigate(resolvedSlug ? `/dashboard/roadmaps/${resolvedSlug}` : "/dashboard/roadmaps");
+    } catch (err) {
+      setError(err?.message ?? "Could not generate roadmap for selected path.");
+      setStatus("recommendations");
+    } finally {
+      setSelectedSlug("");
     }
   };
 
@@ -37,6 +151,59 @@ const AddRoadmap = () => {
       <p className="text-sm text-[#888] mb-6">
         Let AI create a personalized learning path tailored just for you.
       </p>
+      {error ? (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
+
+      {status === "loadingRecommendations" || status === "generatingManual" || status === "generatingSelected" ? (
+        <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4">
+          <img
+            src={LoadingImage}
+            alt="Loading"
+            className="w-24 h-24 object-contain"
+            style={{ animation: "pulse-scale 1.5s ease-in-out infinite" }}
+          />
+          <p className="text-sm text-[#888]">
+            {status === "loadingRecommendations"
+              ? "Finding the best paths for you..."
+              : "Generating your roadmap..."}
+          </p>
+          <style>{`
+            @keyframes pulse-scale {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.08); }
+            }
+          `}</style>
+        </div>
+      ) : null}
+
+      {status === "recommendations" ? (
+        <div className="mt-2">
+          <h2 className="text-xl font-bold text-[#111] mb-1">Recommended Paths</h2>
+          <p className="text-sm text-[#888] mb-5">
+            Pick one path and we will generate a complete roadmap for it.
+          </p>
+          {recommendations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {recommendations.map((course) => (
+                <CourseCard
+                  key={course.slug ?? course.title}
+                  course={course}
+                  loading={selectedSlug === (course.slug ?? "")}
+                  onStart={handleStartRecommended}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-[#666]">No recommendations found from your preferences.</p>
+          )}
+        </div>
+      ) : null}
+
+      {status === "idle" ? (
+        <>
 
       {/* Option Cards */}
       <div className="grid grid-cols-2 gap-3">
@@ -243,6 +410,8 @@ const AddRoadmap = () => {
           </div>
         </div>
       )}
+      </>
+      ) : null}
     </div>
   );
 };
