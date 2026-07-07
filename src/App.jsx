@@ -6,6 +6,7 @@ import Home from "./pages/public/Home";
 import Dashboard from "./pages/dashboard/dashboard";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import VerifyEmail from "./components/auth/VerifyEmail";
+import AuthCallback from "./components/auth/AuthCallback";
 import { useAuthStore } from "./store/authStore";
 import Boarding from "./pages/public/Boarding";
 import CourseReadingTab from './dashboard/pages/CourseReading'
@@ -36,6 +37,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
 
         <Route
           element={

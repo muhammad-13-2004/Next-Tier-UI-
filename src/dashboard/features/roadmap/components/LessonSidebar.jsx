@@ -10,8 +10,12 @@ function RoadmapItem({ lesson, isActive, onOpen }) {
       onClick={() => !locked && onOpen(lesson.id)}
       disabled={locked}
       className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
-        locked ? 'cursor-not-allowed opacity-50' : 'hover:bg-[#F7F7F7]'
-      } ${isActive ? 'border border-[#7AE84A] bg-[#F4FBEF]' : 'border border-transparent'}`}
+        isActive
+          ? 'border border-[#7AE84A] bg-[#F4FBEF] opacity-100'
+          : locked
+          ? 'cursor-not-allowed border border-transparent opacity-50'
+          : 'border border-transparent opacity-60 hover:bg-[#F7F7F7] hover:opacity-80'
+      }`}
     >
       <div
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
@@ -25,7 +29,13 @@ function RoadmapItem({ lesson, isActive, onOpen }) {
         {done ? <Check size={14} /> : locked ? <Lock size={12} /> : lesson.position}
       </div>
       <div className="min-w-0 flex-1">
-        <p className={`truncate text-sm font-medium ${locked ? 'text-[#B8B8B8]' : 'text-[#111]'}`}>{lesson.title}</p>
+        <p
+          className={`truncate text-sm font-medium ${
+            isActive ? 'text-[#111]' : locked ? 'text-[#B8B8B8]' : 'text-[#666]'
+          }`}
+        >
+          {lesson.title}
+        </p>
       </div>
       {!locked && lesson.status === 'in-progress' ? <Play size={14} className="text-[#5BC932]" /> : null}
     </button>

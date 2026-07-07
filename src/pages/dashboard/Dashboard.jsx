@@ -9,7 +9,7 @@ const Dashboard = () => {
   const { loadDashboard } = useDashboard()
 
   useEffect(() => {
-    loadDashboard()
+    loadDashboard({ force: true })
   }, [loadDashboard])
 
   const activeTab = (() => {

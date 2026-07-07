@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { api } from "@/services/api";
+import { persistOnboardingCompleted } from "@/services/onboardingStatus";
+import { useAuthStore } from "@/store/authStore";
 
 export const useOnboardingStore = create((set, get) => ({
 
@@ -21,7 +23,9 @@ export const useOnboardingStore = create((set, get) => ({
   setGoal:           (v) => set({ goal: v }),
   setLoading:        (v) => set({ loading: v }),
   setError:          (v) => set({ error: v }),
-  setCompleted:      (v) => set({ isCompleted: Boolean(v) }),
+  setCompleted:      (v) => set({
+    isCompleted: v === null || v === undefined ? null : Boolean(v),
+  }),
 
 
   // recommendCourses 
@@ -53,6 +57,15 @@ export const useOnboardingStore = create((set, get) => ({
       goal,
       onboarding_completed: true,
     });
+
+    const updatedUser = await persistOnboardingCompleted(
+      useAuthStore.getState().user
+    );
+
+    if (updatedUser) {
+      useAuthStore.getState().setUser(updatedUser);
+    }
+
     set({ isCompleted: true });
   },
 

@@ -5,6 +5,7 @@ import social from "../../assets/Social.png";
 import supabase from "@/services/supabase";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
+import { getPostLoginPath } from "@/utils/authRouting";
 
 // Zod Schemas
 const signupSchema = z.object({
@@ -26,7 +27,8 @@ const AuthForm = ({ mode = 'signup' }) => {
 
   const isSignup = mode === "signup";
   const navigate = useNavigate();
-  const setUser = useAuthStore((s) => s.setUser);
+  const setSession = useAuthStore((s) => s.setSession);
+  const syncOnboardingStatus = useAuthStore((s) => s.syncOnboardingStatus);
 
   const [form, setForm] = useState({
     firstName: '',
@@ -83,7 +85,11 @@ const AuthForm = ({ mode = 'signup' }) => {
         if (error) throw error;
 
         const sessionUser = data.session?.user ?? data.user;
-        if (sessionUser) setUser(sessionUser);
+        if (data.session) {
+          setSession(data.session);
+        } else if (sessionUser) {
+          useAuthStore.getState().setUser(sessionUser);
+        }
 
         navigate("/verify-email", {
           replace: true,
@@ -98,17 +104,21 @@ const AuthForm = ({ mode = 'signup' }) => {
 
         if (error) throw error;
 
-        const user = data.user;
-        if (user) setUser(user);
-
-        if (user?.email_confirmed_at) {
-          navigate("/dashboard", { replace: true });
-        } else {
-          navigate("/verify-email", {
-            replace: true,
-            state: { email: user?.email ?? form.email },
-          });
+        if (data.session) {
+          setSession(data.session);
         }
+
+        const user = data.user;
+        const { user: syncedUser, completed } = user
+          ? await syncOnboardingStatus(user, data.session?.access_token)
+          : { user: null, completed: false };
+
+        navigate(getPostLoginPath(syncedUser, completed), {
+          replace: true,
+          ...(syncedUser && !syncedUser.email_confirmed_at
+            ? { state: { email: syncedUser?.email ?? form.email } }
+            : {}),
+        });
       }
     } catch (error) {
       setErrors({
@@ -121,19 +131,17 @@ const AuthForm = ({ mode = 'signup' }) => {
 
 
   const googleLogin = async () => {
-
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: "http://localhost:5173/boarding",
-      }
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) {
       console.error(error.message);
-    }  
-
-  }
+    }
+  };
 
   return (
     <div className="w-[500px] bg-white p-6 rounded-xl ">

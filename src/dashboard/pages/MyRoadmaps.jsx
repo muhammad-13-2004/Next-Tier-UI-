@@ -24,26 +24,20 @@ const MyRoadmaps = () => {
   const requestedSlugRef = useRef(null)
 
   useEffect(() => {
-    if (courses.length === 0) {
-      loadCourses()
-    }
-  }, [courses.length, loadCourses])
+    loadCourses()
+  }, [loadCourses])
 
   useEffect(() => {
-    if (!slug) return
+    if (!slug) {
+      requestedSlugRef.current = null
+      return
+    }
+
     if (requestedSlugRef.current === String(slug)) return
-
-    const selected = courses.find((r) => String(r.slug) === String(slug))
-    const alreadyHasDetails =
-      (selected?.modules?.length ?? 0) > 0 ||
-      ((activeCourse?.modules?.length ?? 0) > 0 &&
-        String(activeCourse?.slug) === String(slug))
-
-    if (alreadyHasDetails) return
 
     requestedSlugRef.current = String(slug)
     loadCourse(slug)
-  }, [slug, courses, activeCourse, loadCourse])
+  }, [slug, loadCourse])
 
   const counts = FILTER_TABS.reduce((acc, t) => {
     acc[t.key] =
@@ -69,7 +63,7 @@ const MyRoadmaps = () => {
         null
       : null
 
-  if (slug && loading) {
+  if (slug && loading && !selectedRoadmap) {
     return (
       <div className="min-h-screen pb-16 flex items-center justify-center">
         <img

@@ -67,10 +67,13 @@ const AddRoadmap = () => {
       setStatus("generatingManual");
       try {
         const course = await generateRoadmap({
-          input: prompt.trim(),
-          level: level || "Beginner",
-          time: timeCommitment || "30 minutes",
-          goal: goal || "Learn for fun",
+          mode: "prompt",
+          input: {
+            prompt: prompt.trim(),
+            complexity: (level || "Beginner").toLowerCase(),
+            time_commitment: timeCommitment || "30 minutes",
+            goal: goal || "Learn for fun",
+          },
         });
         const resolvedSlug = course?.slug ?? course?.id;
         navigate(resolvedSlug ? `/dashboard/roadmaps/${resolvedSlug}` : "/dashboard/roadmaps");

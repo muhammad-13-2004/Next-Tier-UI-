@@ -1,10 +1,12 @@
 import { Button } from "../../../../components/ui/button";
+import { BookOpenText } from 'lucide-react'
+
 
 const PathCard = ({ path }) => {
   return (
     <div className="border border-(--border-color) rounded-2xl p-5 flex justify-between items-center cursor-pointer">
       <div className="flex items-center gap-4">
-        <img src={path.img} alt="course-icon" className="w-12 h-12" />
+         <BookOpenText className="text-(--secondary-color)" size="50px"/>
         <div>
           <h3 className="font-semibold text-(--primary-color)">
             {path.title}

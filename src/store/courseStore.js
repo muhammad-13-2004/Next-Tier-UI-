@@ -1,6 +1,54 @@
 import { create } from "zustand";
 import { api } from "@/services/api";
 
+const normalizeComplexity = (value) => {
+  const normalized = String(value ?? "beginner").trim().toLowerCase();
+  if (normalized === "beginner" || normalized === "intermediate" || normalized === "advanced") {
+    return normalized;
+  }
+  return "beginner";
+};
+
+const normalizeGenerateRoadmapPayload = (payload) => {
+  if (payload?.mode === "recommendation" && payload?.input) {
+    return {
+      mode: "recommendation",
+      input: {
+        title: payload.input.title,
+        complexity: normalizeComplexity(payload.input.complexity ?? payload.input.level),
+        goal: payload.input.goal,
+        time_commitment: payload.input.time_commitment ?? payload.input.time,
+      },
+    };
+  }
+
+  if (payload?.mode === "prompt" && payload?.input && typeof payload.input === "object") {
+    return {
+      mode: "prompt",
+      input: {
+        prompt: payload.input.prompt,
+        complexity: normalizeComplexity(payload.input.complexity ?? payload.input.level),
+        goal: payload.input.goal,
+        time_commitment: payload.input.time_commitment ?? payload.input.time,
+      },
+    };
+  }
+
+  if (typeof payload?.input === "string") {
+    return {
+      mode: "prompt",
+      input: {
+        prompt: payload.input,
+        complexity: normalizeComplexity(payload.level ?? payload.complexity),
+        goal: payload.goal,
+        time_commitment: payload.time ?? payload.time_commitment,
+      },
+    };
+  }
+
+  return payload;
+};
+
 const normalizeStatus = (status) => {
   if (!status) return "saved";
   return String(status).toLowerCase().replace(/_/g, "-");
@@ -100,7 +148,7 @@ const normalizeCourse = (payload) => {
       base?.shortDescription,
       base?.description
     ),
-    progress: Number(base.progress ?? 0),
+    progress: Number(base.progress ?? base.progress_percentage ?? 0),
     total_modules: totalModules,
     completed_modules: completedModules,
     modules,
@@ -115,7 +163,7 @@ const extractCourseList = (payload) => {
   return [];
 };
 
-export const useCourseStore = create((set) => ({
+export const useCourseStore = create((set, get) => ({
 
   courses:       [],   // all user roadmaps (for My Roadmaps tab)
   activeCourse:  null, // currently open roadmap detail
@@ -135,13 +183,70 @@ export const useCourseStore = create((set) => ({
     }
   },
 
+  mergeCourseUpdate: (coursePayload) => {
+    const incoming = normalizeCourse(
+      coursePayload?.course ? coursePayload : { course: coursePayload },
+    );
+    if (!incoming) return null;
+
+    set((state) => {
+      const existing =
+        state.courses.find((c) => String(c.slug) === String(incoming.slug)) ??
+        (String(state.activeCourse?.slug) === String(incoming.slug)
+          ? state.activeCourse
+          : null);
+
+      const merged = existing
+        ? {
+            ...existing,
+            ...incoming,
+            progress: incoming.progress ?? existing.progress,
+            completed_modules:
+              incoming.completed_modules ?? existing.completed_modules,
+            total_modules: incoming.total_modules ?? existing.total_modules,
+            status: incoming.status ?? existing.status,
+            subtitle: incoming.subtitle || existing.subtitle,
+            short_description:
+              incoming.short_description || existing.short_description,
+            modules: incoming.modules?.length ? incoming.modules : existing.modules,
+          }
+        : incoming;
+
+      return {
+        activeCourse:
+          state.activeCourse &&
+          String(state.activeCourse.slug) === String(merged.slug)
+            ? merged
+            : state.activeCourse,
+        courses: [
+          merged,
+          ...state.courses.filter((c) => String(c.slug) !== String(merged.slug)),
+        ],
+      };
+    });
+
+    return incoming;
+  },
+
+  refreshAfterLessonComplete: async (courseId, coursePayload = null) => {
+    if (coursePayload) {
+      get().mergeCourseUpdate(coursePayload);
+    }
+
+    const tasks = [get().loadCourses()];
+    if (courseId) {
+      tasks.push(get().loadCourse(courseId));
+    }
+    await Promise.all(tasks);
+  },
+
   // Called after user picks a recommended course OR enters a custom prompt
   // recommendation mode: generateRoadmap({ mode: "recommendation", input: { title, complexity, goal, time_commitment } })
   // prompt mode:         generateRoadmap({ mode: "prompt", input: { prompt, complexity, goal, time_commitment } })
   generateRoadmap: async (payload) => {
     set({ generating: true, error: null });
     try {
-      const response = await api.generateRoadmap(payload);
+      const response = await api.generateRoadmap(normalizeGenerateRoadmapPayload(payload));
       const course = normalizeCourse(response);
 
       if (!course) throw new Error("Invalid roadmap response.");
