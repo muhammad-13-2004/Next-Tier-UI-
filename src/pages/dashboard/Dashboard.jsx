@@ -1,54 +1,58 @@
-import React from 'react'
-import supabase from '@/services/supabase'
-import { useNavigate } from 'react-router-dom'
-import DashboardLayout from '@/components/layout/DashboardLayout'
-import PathCard from '@/components/dashboard/PathCard'
+import React, { useEffect } from 'react'
+import DashboardLayout from '@/dashboard/layout/DashboardLayout'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useDashboard } from '@/hooks/useDashboard'
 
 const Dashboard = () => {
-  
+  const location = useLocation()
   const navigate = useNavigate()
+  const { loadDashboard } = useDashboard()
 
-  const logout = async () => {
-    await supabase.auth.signOut()
-    navigate('/')
+  useEffect(() => {
+    loadDashboard({ force: true })
+  }, [loadDashboard])
+
+  const activeTab = (() => {
+    const path = location.pathname
+    if (path === '/dashboard' || path === '/dashboard/') return 'main'
+    if (path.startsWith('/dashboard/roadmaps')) return 'roadmaps'
+    if (path.startsWith('/dashboard/lesson/')) return 'roadmaps' // lesson reading originates from roadmaps
+    if (path.startsWith('/dashboard/community')) return 'community'
+    if (path.startsWith('/dashboard/ai-tutor')) return 'aiTutor'
+    if (path.startsWith('/dashboard/career')) return 'career'
+    if (path.startsWith('/dashboard/settings')) return 'settings'
+    return 'main'
+  })()
+
+  const handleTabChange = (id) => {
+    switch (id) {
+      case 'main':
+        navigate('/dashboard')
+        break
+      case 'roadmaps':
+        navigate('/dashboard/roadmaps')
+        break
+      case 'community':
+        navigate('/dashboard/community')
+        break
+      case 'aiTutor':
+        navigate('/dashboard/ai-tutor')
+        break
+      case 'career':
+        navigate('/dashboard/career')
+        break
+      case 'settings':
+        navigate('/dashboard/settings')
+        break
+      default:
+        navigate('/dashboard')
+        break
+    }
   }
 
-  const suggestedPaths = [
-    {
-      id: 1,
-      title: "Python for Beginners",
-      duration: "12 weeks",
-      modules: 6,
-      level: "Beginner",
-    },
-    {
-      id: 2,
-      title: "Full Stack Development",
-      duration: "16 weeks",
-      modules: 8,
-      level: "Intermediate",
-    },
-  ];
-
   return (
-    <DashboardLayout>
-      <section className="space-y-6">
-        <div className="rounded-3xl bg-(--background-color) shadow-sm p-8">
-          <h1 className="text-3xl font-bold text-(--primary-color)">
-            Welcome back, Muhammad
-          </h1>
-
-          <p className="text-(--subtext-color) mt-2">
-            What do you want to learn today?
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          {suggestedPaths.map((path) => (
-            <PathCard key={path.id} path={path} />
-          ))}
-        </div>
-      </section>
+    <DashboardLayout activeTab={activeTab} onTabChange={handleTabChange}>
+      <Outlet />
     </DashboardLayout>
   )
 }

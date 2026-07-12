@@ -180,7 +180,7 @@ function EmptyCircle() {
   )
 }
 
-function OptionCard({ option, isSelected, onClick, multi = false }) {
+function OptionCard({ option, isSelected, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -201,7 +201,7 @@ function OptionCard({ option, isSelected, onClick, multi = false }) {
   )
 }
 
-export default function Boarding2() {
+export default function Boarding2({ onNext, onBack }) {
   const [vibe, setVibe] = useState('beginner')
   const [learn, setLearn] = useState(new Set(['reading']))
   const [time, setTime] = useState('5h')
@@ -216,7 +216,6 @@ export default function Boarding2() {
 
   return (
     <div className="h-screen bg-white flex flex-col overflow-hidden">
-      {/* Header */}
       <header className="px-8 py-3 shrink-0">
         <div className="h-8 flex items-center">
           <img
@@ -227,9 +226,7 @@ export default function Boarding2() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="flex-1 flex flex-col items-center px-6 overflow-hidden">
-        {/* Progress */}
         <div className="w-full max-w-2xl">
           <p className="text-right text-xs text-gray-400 mb-1">2/3</p>
           <div className="flex gap-2">
@@ -239,7 +236,6 @@ export default function Boarding2() {
           </div>
         </div>
 
-        {/* Heading */}
         <div className="text-center mt-5">
           <h1 className="text-2xl font-bold text-gray-900">
             Tell us a bit about{' '}
@@ -251,9 +247,7 @@ export default function Boarding2() {
           </p>
         </div>
 
-        {/* Questions */}
         <div className="w-full max-w-3xl mt-6 flex flex-col gap-5">
-          {/* Q1 */}
           <div>
             <p className="text-sm font-medium text-gray-800 mb-2">
               1. What's your current vibe with learning?
@@ -270,7 +264,6 @@ export default function Boarding2() {
             </div>
           </div>
 
-          {/* Q2 */}
           <div>
             <p className="text-sm font-medium text-gray-800 mb-2">
               2. How do you like to learn? &nbsp;
@@ -285,13 +278,11 @@ export default function Boarding2() {
                   option={opt}
                   isSelected={learn.has(opt.id)}
                   onClick={() => toggleLearn(opt.id)}
-                  multi
                 />
               ))}
             </div>
           </div>
 
-          {/* Q3 */}
           <div>
             <p className="text-sm font-medium text-gray-800 mb-2">
               3. How much weekly time you can commit?
@@ -309,9 +300,13 @@ export default function Boarding2() {
           </div>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-4 mt-6">
-          <button className="bg-black text-white px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors">
+          <button
+            onClick={() =>
+              onNext({ vibe, learnStyle: [...learn], weeklyTime: time })
+            }
+            className="bg-black text-white px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition-colors"
+          >
             Next, Tell Us More
             <svg
               viewBox="0 0 24 24"
@@ -327,7 +322,10 @@ export default function Boarding2() {
               />
             </svg>
           </button>
-          <button className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors">
+          <button
+            onClick={onBack}
+            className="border border-gray-300 text-gray-800 px-7 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors"
+          >
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -346,8 +344,7 @@ export default function Boarding2() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
+      {/* <footer className="text-center text-xs text-gray-400 py-3 shrink-0">
         © 2025 NextTier ·{' '}
         <a href="#" className="underline hover:text-gray-600">
           Privacy
@@ -358,7 +355,7 @@ export default function Boarding2() {
         </a>
         {' · '}
         Built with <span className="text-red-500">♥</span> for curious minds
-      </footer>
+      </footer> */}
     </div>
   )
 }
