@@ -1,4 +1,5 @@
 import { useDashboard } from "@/hooks/useDashboard";
+import {Trophy} from 'lucide-react'
 
 const FriendshipRankCard = () => {
   
@@ -9,16 +10,12 @@ const FriendshipRankCard = () => {
 
  return (
     <>
-    <div className="bg-white rounded-3xl p-5 shadow-sm w-full max-w-sm">
+    <div className="bg-white border border-(--subtext-color)/10 rounded-3xl p-5 w-full max-w-sm">
       
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-5 h-5 border-2 border-green-400 rounded-sm flex items-end justify-center">
-          <div className="w-1 h-2 bg-green-400 mr-[2px]"></div>
-          <div className="w-1 h-3 bg-green-400 mr-[2px]"></div>
-          <div className="w-1 h-4 bg-green-400"></div>
-        </div>
-        <h3 className="font-semibold text-gray-800 text-lg">
+        <Trophy className="w-4 h-4 text-lime-400" />
+        <h3 className="font-semibold text-(--primary-color) text-lg">
           Friendship Rank
         </h3>
       </div>

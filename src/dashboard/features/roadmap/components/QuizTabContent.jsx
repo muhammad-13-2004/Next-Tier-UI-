@@ -1,4 +1,5 @@
 import React from 'react'
+import LessonLoadingPlaceholder from './LessonLoadingPlaceholder'
 
 export default function QuizTabContent({
   quizLoading,
@@ -14,58 +15,66 @@ export default function QuizTabContent({
   const totalQuiz = quizItems.length
   const currentItem = quizItems[currentQuizIndex]
 
+  if (quizLoading) {
+    return <LessonLoadingPlaceholder variant="quiz" />
+  }
+
   return (
     <div className="space-y-4">
-      {quizLoading ? <p className="text-sm text-[#666]">Generating quiz...</p> : null}
       {quizError ? <p className="text-sm text-red-600">{quizError}</p> : null}
+
       {currentItem ? (
-        <div className="rounded-2xl border border-[#ECECEC] p-5">
+        <div className="p-1">
           <p className="text-xs font-semibold text-[#666] mb-2">
             Question {currentQuizIndex + 1} of {totalQuiz}
           </p>
-          <p className="text-sm font-semibold text-[#111]">{currentItem.question}</p>
+          <p className="text-base font-semibold text-[#111]">{currentItem.question}</p>
+
           <div className="mt-4 grid gap-2">
-            {(Array.isArray(currentItem.options) ? currentItem.options : []).map((option, optionIndex) => (
-              <button
-                key={`${option}-${optionIndex}`}
-                onClick={() => onSelectAnswer(currentQuizIndex, optionIndex)}
-                disabled={quizSubmitted}
-                className={`rounded-xl border px-4 py-3 text-sm text-left ${
-                  quizSubmitted && optionIndex === currentItem.correctIndex
-                    ? 'border-[#7AE84A] bg-[#F4FBEF] text-[#111]'
-                    : selectedAnswers[currentQuizIndex] === optionIndex
-                    ? 'border-[#111] bg-[#FAFAFA] text-[#111]'
-                    : 'border-[#ECECEC] text-[#666]'
-                }`}
-              >
-                {option}
-              </button>
-            ))}
+            {(Array.isArray(currentItem.options) ? currentItem.options : []).map((option, optionIndex) => {
+              const isSelected = selectedAnswers[currentQuizIndex] === optionIndex
+              const isCorrect = quizSubmitted && optionIndex === currentItem.correctIndex
+              const isWrongSelection =
+                quizSubmitted && isSelected && optionIndex !== currentItem.correctIndex
+
+              return (
+                <button
+                  key={`${option}-${optionIndex}`}
+                  type="button"
+                  onClick={() => onSelectAnswer(currentQuizIndex, optionIndex)}
+                  disabled={quizSubmitted}
+                  className={`rounded-xl px-4 py-3 text-sm text-left transition-all ${
+                    isCorrect
+                      ? 'border-2 border-[#7AE84A] bg-[#F4FBEF] text-[#111]'
+                      : isWrongSelection
+                      ? 'border-2 border-[#F87171] bg-[#FEF2F2] text-[#111]'
+                      : isSelected
+                      ? 'border-2 border-[#7AE84A] bg-[#F4FBEF] text-[#111] shadow-sm'
+                      : 'border border-[#ECECEC] text-[#666] hover:border-[#D0D0D0] hover:bg-[#FAFAFA]'
+                  }`}
+                >
+                  {option}
+                </button>
+              )
+            })}
           </div>
 
-          <div className="flex items-center justify-between mt-5">
+          {currentQuizIndex > 0 && !quizSubmitted ? (
             <button
-              onClick={() => setCurrentQuizIndex((i) => Math.max(0, i - 1))}
-              disabled={currentQuizIndex === 0}
-              className="text-xs font-semibold text-[#666] disabled:opacity-40"
+              type="button"
+              onClick={() => setCurrentQuizIndex((index) => Math.max(0, index - 1))}
+              className="mt-5 text-xs font-semibold text-[#666] transition-colors hover:text-[#111]"
             >
-              Previous
+              Previous question
             </button>
-            <button
-              onClick={() => setCurrentQuizIndex((i) => Math.min(totalQuiz - 1, i + 1))}
-              disabled={currentQuizIndex >= totalQuiz - 1}
-              className="text-xs font-semibold text-[#666] disabled:opacity-40"
-            >
-              Next
-            </button>
-          </div>
+          ) : null}
         </div>
-      ) : !quizLoading ? (
+      ) : (
         <p className="text-sm text-[#666]">No quiz is available for this lesson yet.</p>
-      ) : null}
+      )}
 
       {quizSubmitted && totalQuiz > 0 ? (
-        <div className="rounded-xl border border-[#ECECEC] bg-[#FAFAFA] px-4 py-3 text-sm font-semibold text-[#111]">
+        <div className="rounded-xl bg-[#FAFAFA] px-4 py-3 text-sm font-semibold text-[#111]">
           Score: {quizScore} / {totalQuiz}
         </div>
       ) : null}

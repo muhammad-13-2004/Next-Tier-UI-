@@ -45,7 +45,7 @@ const Sidebar = ({ collapsed, setCollapsed, activeTab, onTabChange }) => {
           />
         )}
 
-        <button onClick={() => setCollapsed(!collapsed)}>
+        <button className={`${collapsed && 'w-full flex justify-center'}`} onClick={() => setCollapsed(!collapsed)}>
           {collapsed ? (
             <PanelLeftOpen className="w-5 h-5" />
           ) : (
@@ -67,7 +67,7 @@ const Sidebar = ({ collapsed, setCollapsed, activeTab, onTabChange }) => {
                   : 'hover:bg-(--primary-color)/6 text-(--subtext-color)'
               }`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className={`w-5 h-5 ${ collapsed && 'w-full flex justify-center' }`} />
               {!collapsed && <span className="font-normal">{item.label}</span>}
             </button>
           )

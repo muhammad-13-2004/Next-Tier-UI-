@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, BotMessageSquare } from 'lucide-react'
 import { useCourseStore } from '@/store/courseStore'
+import { useDashboardStore } from '@/store/dashboardStore'
 import { api } from '@/services/api'
 import { parseContentBlocks } from '@/dashboard/features/roadmap/utils/lessonContent.jsx'
 import { extractQuizItems } from '@/dashboard/features/roadmap/utils/quiz'
 import ReadingTabContent from '@/dashboard/features/roadmap/components/ReadingTabContent'
 import QuizTabContent from '@/dashboard/features/roadmap/components/QuizTabContent'
 import LessonSidebar from '@/dashboard/features/roadmap/components/LessonSidebar'
+import OwlChatPanel from '@/dashboard/features/roadmap/components/OwlChatPanel'
+import CreditLimitModal from '@/dashboard/components/CreditLimitModal'
+import { isCreditLimitError } from '@/utils/creditErrors'
 
 function findLessonDetails(courses, roadmapSlug, lessonId) {
   const roadmap = courses.find((item) => String(item.slug) === String(roadmapSlug))
@@ -35,6 +39,8 @@ export default function CourseReadingTab() {
 
   const courses = useCourseStore((s) => s.courses)
   const loadCourse = useCourseStore((s) => s.loadCourse)
+  const refreshAfterLessonComplete = useCourseStore((s) => s.refreshAfterLessonComplete)
+  const loadDashboard = useDashboardStore((s) => s.loadDashboard)
   const activeCourse = useCourseStore((s) => s.activeCourse)
   const loading = useCourseStore((s) => s.loading)
 
@@ -50,6 +56,8 @@ export default function CourseReadingTab() {
   const [quizScore, setQuizScore] = useState(0)
   const [lessonCompleting, setLessonCompleting] = useState(false)
   const [lessonCompleted, setLessonCompleted] = useState(false)
+  const [owlChatOpen, setOwlChatOpen] = useState(false)
+  const [creditLimitOpen, setCreditLimitOpen] = useState(false)
 
   useEffect(() => {
     if (!slug) return
@@ -86,6 +94,9 @@ export default function CourseReadingTab() {
     setQuizSubmitted(false)
     setQuizScore(0)
     setLessonCompleted(false)
+    setGeneratedContent('')
+    setContentLoading(true)
+    setCreditLimitOpen(false)
     setActiveTab('Reading')
   }, [lesson?.id])
 
@@ -96,6 +107,7 @@ export default function CourseReadingTab() {
       if (!roadmap || !module || !lesson) return
       if (lesson.content) {
         setGeneratedContent('')
+        setContentLoading(false)
         return
       }
 
@@ -114,8 +126,13 @@ export default function CourseReadingTab() {
 
         const content = response?.content ?? response?.data?.content ?? response?.lesson?.content ?? ''
         if (isMounted) setGeneratedContent(content)
-      } catch {
-        if (isMounted) setGeneratedContent('')
+      } catch (err) {
+        if (isMounted) {
+          setGeneratedContent('')
+          if (isCreditLimitError(err)) {
+            setCreditLimitOpen(true)
+          }
+        }
       } finally {
         if (isMounted) setContentLoading(false)
       }
@@ -144,7 +161,14 @@ export default function CourseReadingTab() {
           setQuizError('Quiz response received but quiz list is empty.')
         }
       } catch (err) {
-        if (isMounted) setQuizError(err?.message || 'Failed to generate quiz.')
+        if (isMounted) {
+          if (isCreditLimitError(err)) {
+            setCreditLimitOpen(true)
+            setQuizError('')
+          } else {
+            setQuizError(err?.message || 'Failed to generate quiz.')
+          }
+        }
       } finally {
         if (isMounted) setQuizLoading(false)
       }
@@ -158,40 +182,45 @@ export default function CourseReadingTab() {
 
   const resolvedContent = generatedContent || lesson?.content || ''
   const contentBlocks = parseContentBlocks(resolvedContent)
+  const isPanelLoading = activeTab === 'Reading' ? contentLoading : quizLoading
+  const isQuizTabDisabled = contentLoading
   const totalQuiz = quizItems.length
-  const answeredQuiz = Object.keys(selectedAnswers).length
-  const canSubmitQuiz = totalQuiz > 0 && answeredQuiz === totalQuiz
+  const isLastQuizQuestion = currentQuizIndex >= totalQuiz - 1
+  const hasCurrentAnswer = selectedAnswers[currentQuizIndex] !== undefined
   const canProceedToNext = lessonCompleted || !nextLesson
 
   const handleSelectAnswer = (questionIndex, optionIndex) => {
     if (quizSubmitted) return
-    setSelectedAnswers((prev) => {
-      const next = { ...prev, [questionIndex]: optionIndex }
-      if (questionIndex < totalQuiz - 1) {
-        setCurrentQuizIndex(questionIndex + 1)
-      }
-      return next
-    })
+    setSelectedAnswers((prev) => ({
+      ...prev,
+      [questionIndex]: optionIndex,
+    }))
   }
 
   const handleSubmitQuiz = async () => {
-    if (!canSubmitQuiz || quizSubmitted || !lesson?.id) return
+    if (quizSubmitted || !lesson?.id || totalQuiz === 0) return
 
-    const correct = quizItems.reduce((acc, item, idx) => acc + (selectedAnswers[idx] === item.correctIndex ? 1 : 0), 0)
+    const correct = quizItems.reduce(
+      (acc, item, idx) => acc + (selectedAnswers[idx] === item.correctIndex ? 1 : 0),
+      0,
+    )
     setQuizScore(correct)
     setQuizSubmitted(true)
 
     setLessonCompleting(true)
     try {
-      await api.completeLesson({
+      const result = await api.completeLesson({
         lesson_id: lesson.id,
         quiz_score: correct,
         xp_earned: Number(lesson?.xp_reward ?? 0),
       })
       setLessonCompleted(true)
+      setLessonCompleting(false)
+
+      void refreshAfterLessonComplete(roadmap.slug, result?.course ?? null)
+      void loadDashboard({ force: true })
     } catch {
       setLessonCompleted(false)
-    } finally {
       setLessonCompleting(false)
     }
   }
@@ -201,14 +230,35 @@ export default function CourseReadingTab() {
       setActiveTab('Quiz')
       return
     }
+
     if (!quizSubmitted) {
+      if (!hasCurrentAnswer) return
+
+      if (!isLastQuizQuestion) {
+        setCurrentQuizIndex((index) => Math.min(totalQuiz - 1, index + 1))
+        return
+      }
+
       handleSubmitQuiz()
       return
     }
+
     if (nextLesson && canProceedToNext) {
       navigate(`/dashboard/roadmaps/${roadmap.slug}/${nextLesson.id}`)
     }
   }
+
+  const primaryActionLabel = (() => {
+    if (activeTab !== 'Quiz') return 'Go to Quiz'
+    if (!quizSubmitted) return isLastQuizQuestion ? 'Submit' : 'Next'
+    if (lessonCompleting) return 'Completing Lesson...'
+    return nextLesson ? 'Next Lesson' : 'Completed'
+  })()
+
+  const isPrimaryActionDisabled =
+    lessonCompleting ||
+    (activeTab === 'Quiz' && !quizSubmitted && !hasCurrentAnswer) ||
+    (activeTab === 'Quiz' && quizSubmitted && !canProceedToNext)
 
   if (loading && (!roadmap || !module || !lesson)) {
     return <div className="min-h-screen bg-[#F7F7F5] flex items-center justify-center"><p className="text-sm text-[#666]">Loading lesson...</p></div>
@@ -233,7 +283,19 @@ export default function CourseReadingTab() {
               <p className="truncate text-sm font-semibold text-[#111]">{module.title}</p>
             </div>
           </div>
-          <div className="rounded-full bg-[#111] px-3 py-1.5 text-xs font-bold text-white">+{lesson.xp_reward} XP</div>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setOwlChatOpen(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-(--primary-color) bg-(--secondary-color) px-5 py-2 text-sm font-semibold text-[#111] transition-colors hover:bg-[#F7F7F7]"
+            >
+              <BotMessageSquare size={20} className="text-(--primary-color)" />
+              Talk with Owl
+            </button>
+            <div className="rounded-full bg-[#111] px-5 py-2.5 text-xs font-bold text-white">
+              +{lesson.xp_reward} XP
+            </div>
+          </div>
         </div>
       </header>
 
@@ -246,9 +308,30 @@ export default function CourseReadingTab() {
           </div>
 
           <div className="mb-6 flex w-fit rounded-2xl bg-[#EFEFEF] p-1">
-            {['Reading', 'Quiz'].map((tab) => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`rounded-xl px-5 py-2 text-sm font-semibold transition-all ${activeTab === tab ? 'bg-white text-[#111] shadow-sm' : 'text-[#777] hover:text-[#111]'}`}>{tab}</button>
-            ))}
+            {['Reading', 'Quiz'].map((tab) => {
+              const isQuizTab = tab === 'Quiz'
+              const isDisabled = isQuizTab && isQuizTabDisabled
+
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  disabled={isDisabled}
+                  onClick={() => {
+                    if (!isDisabled) setActiveTab(tab)
+                  }}
+                  className={`rounded-xl px-5 py-2 text-sm font-semibold transition-all ${
+                    activeTab === tab
+                      ? 'bg-white text-[#111] shadow-sm'
+                      : isDisabled
+                      ? 'cursor-not-allowed text-[#B8B8B8]'
+                      : 'text-[#777] hover:text-[#111]'
+                  }`}
+                >
+                  {tab}
+                </button>
+              )
+            })}
           </div>
 
           <div className="rounded-[24px] border border-[#E9E9E9] bg-white p-7">
@@ -267,24 +350,26 @@ export default function CourseReadingTab() {
               />
             ) : null}
 
-            <div className="mt-8 flex items-center justify-between border-t border-[#F0F0F0] pt-6">
-              <button
-                onClick={() => previousLesson && navigate(`/dashboard/roadmaps/${roadmap.slug}/${previousLesson.id}`)}
-                disabled={!previousLesson}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-[#666] transition-colors hover:text-[#111] disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                <ChevronLeft size={16} />Previous Lesson
-              </button>
+            {!isPanelLoading ? (
+              <div className="mt-8 flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+                <button
+                  onClick={() => previousLesson && navigate(`/dashboard/roadmaps/${roadmap.slug}/${previousLesson.id}`)}
+                  disabled={!previousLesson}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#666] transition-colors hover:text-[#111] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <ChevronLeft size={16} />Previous Lesson
+                </button>
 
-              <button
-                onClick={handlePrimaryAction}
-                disabled={(activeTab === 'Quiz' && !quizSubmitted && !canSubmitQuiz) || lessonCompleting || (activeTab === 'Quiz' && quizSubmitted && !canProceedToNext)}
-                className="inline-flex items-center gap-2 rounded-full bg-[#7AE84A] px-5 py-2.5 text-sm font-bold text-black transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {activeTab !== 'Quiz' ? 'Go to Quiz' : !quizSubmitted ? 'Submit Quiz' : lessonCompleting ? 'Completing Lesson...' : nextLesson ? 'Next Lesson' : 'Completed'}
-                <ChevronRight size={16} />
-              </button>
-            </div>
+                <button
+                  onClick={handlePrimaryAction}
+                  disabled={isPrimaryActionDisabled}
+                  className="inline-flex items-center gap-2 rounded-full bg-[#7AE84A] px-5 py-2.5 text-sm font-bold text-black transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {primaryActionLabel}
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            ) : null}
           </div>
         </main>
 
@@ -296,6 +381,19 @@ export default function CourseReadingTab() {
           onOpenLesson={(lessonId) => navigate(`/dashboard/roadmaps/${roadmap.slug}/${lessonId}`)}
         />
       </div>
+
+      <OwlChatPanel
+        open={owlChatOpen}
+        onClose={() => setOwlChatOpen(false)}
+        lessonTitle={lesson.title}
+        courseTitle={roadmap.title}
+      />
+
+      <CreditLimitModal
+        open={creditLimitOpen}
+        onBackToHome={() => navigate('/dashboard')}
+        onUpgrade={() => navigate('/dashboard/settings')}
+      />
     </div>
   )
 }

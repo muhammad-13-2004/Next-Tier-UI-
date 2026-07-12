@@ -1,6 +1,7 @@
 import React from "react";
 import FilterBar from "@/dashboard/features/community/components/FilterBar";
 import RoadmapGrid from "@/dashboard/features/community/components/RoadmapGrid";
+import { Link } from "react-router-dom";
 
 
 const Community = () => {
@@ -15,7 +16,10 @@ const Community = () => {
       </p>
     </div>
     <FilterBar />
-    <RoadmapGrid/>
+    <p className="text-(--subtext-color) mt-1 opacity-70">
+        No course available! Generate your personalized roadmap from <Link to='/dashboard/roadmaps' className="text-lime-500 underline">here.</Link>
+    </p>
+    {/* <RoadmapGrid/> */}
     </>
   );
 };

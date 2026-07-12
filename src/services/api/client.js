@@ -3,7 +3,7 @@ import { useAuthStore } from "@/store/authStore";
 
 const apiClient = axios.create({
   baseURL: "https://oasrvhtgkgqelbhufuxa.supabase.co/functions/v1",
-  timeout: 20000,
+  timeout: 120000,
   headers: { "Content-Type": "application/json" },
 });
 

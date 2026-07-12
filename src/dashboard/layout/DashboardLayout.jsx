@@ -6,7 +6,7 @@ const DashboardLayout = ({ children, activeTab, onTabChange }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="min-h-screen bg-(--background-color) flex">
+    <div className="h-screen flex">
       <Sidebar
         collapsed={collapsed}
         setCollapsed={setCollapsed}
@@ -15,7 +15,7 @@ const DashboardLayout = ({ children, activeTab, onTabChange }) => {
       />
       <div className={`flex-1 transition-all duration-300 ${ collapsed ? "ml-20" : "ml-64"}`}>
         <Topbar />
-        <main className="min-h-screen p-6 bg-[#FAFAFA]">{children}</main>
+        <main className="h-screen p-6 bg-[#fbfbfb]">{children}</main>
       </div>
     </div>
   );

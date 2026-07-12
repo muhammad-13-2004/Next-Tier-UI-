@@ -1,12 +1,16 @@
 import React from 'react'
 import CodeBlock from './CodeBlock'
+import LessonLoadingPlaceholder from './LessonLoadingPlaceholder'
 import { parseInline } from '@/dashboard/features/roadmap/utils/lessonContent.jsx'
 
 export default function ReadingTabContent({ contentLoading, contentBlocks }) {
+  if (contentLoading) {
+    return <LessonLoadingPlaceholder variant="reading" />
+  }
+
   return (
     <div className="space-y-6">
-      {contentLoading ? <p className="text-sm text-[#666]">Generating lesson content...</p> : null}
-      {!contentLoading && contentBlocks.length === 0 ? (
+      {contentBlocks.length === 0 ? (
         <p className="text-sm text-[#666]">No content available for this lesson yet.</p>
       ) : null}
       {contentBlocks.map((block, index) => {

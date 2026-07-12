@@ -24,26 +24,20 @@ const MyRoadmaps = () => {
   const requestedSlugRef = useRef(null)
 
   useEffect(() => {
-    if (courses.length === 0) {
-      loadCourses()
-    }
-  }, [courses.length, loadCourses])
+    loadCourses()
+  }, [loadCourses])
 
   useEffect(() => {
-    if (!slug) return
+    if (!slug) {
+      requestedSlugRef.current = null
+      return
+    }
+
     if (requestedSlugRef.current === String(slug)) return
-
-    const selected = courses.find((r) => String(r.slug) === String(slug))
-    const alreadyHasDetails =
-      (selected?.modules?.length ?? 0) > 0 ||
-      ((activeCourse?.modules?.length ?? 0) > 0 &&
-        String(activeCourse?.slug) === String(slug))
-
-    if (alreadyHasDetails) return
 
     requestedSlugRef.current = String(slug)
     loadCourse(slug)
-  }, [slug, courses, activeCourse, loadCourse])
+  }, [slug, loadCourse])
 
   const counts = FILTER_TABS.reduce((acc, t) => {
     acc[t.key] =
@@ -69,19 +63,20 @@ const MyRoadmaps = () => {
         null
       : null
 
-  if (slug && loading) {
+  if (loading && !selectedRoadmap) {
     return (
-      <div className="min-h-screen pb-16 flex items-center justify-center">
+      <div className="min-h-screen pb-16 flex flex-col items-center justify-center gap-4">
         <img
           src={LoadingImage}
           alt="Loading roadmap"
-          className="w-24 h-24 object-contain"
+          className="w-20 h-20 object-contain"
           style={{ animation: 'pulse-scale 1.5s ease-in-out infinite' }}
         />
+        <p className="text-sm text-[#888]">Loading your roadmaps...</p>
         <style>{`
           @keyframes pulse-scale {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.12); }
           }
         `}</style>
       </div>
@@ -99,7 +94,6 @@ const MyRoadmaps = () => {
 
   return (
     <div className="min-h-screen pb-16">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-extrabold text-[#111] tracking-tight">
@@ -110,13 +104,13 @@ const MyRoadmaps = () => {
           </p>
         </div>
         <Link
-        to="/dashboard/add-roadmap"
-        className="flex items-center gap-2 bg-[#111] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#404040] transition-colors">
-        + Add Roadmap
+          to="/dashboard/add-roadmap"
+          className="flex items-center gap-2 bg-[#111] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#404040] transition-colors"
+        >
+          + Add Roadmap
         </Link>
       </div>
 
-      {/* Filter tabs */}
       <div className="flex gap-0 border-b border-[#EBEBEB] mb-6">
         {FILTER_TABS.map((tab) => (
           <button
@@ -140,21 +134,16 @@ const MyRoadmaps = () => {
         ))}
       </div>
 
-      {/* Grid or empty */}
       {visible.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-[#EBEBEB] rounded-2xl bg-white text-center">
-          <div className="text-4xl mb-3">📭</div>
-          <p className="font-bold text-[#111] mb-1">Nothing here yet</p>
-          <p className="text-sm text-[#A3A3A3] max-w-xs leading-relaxed">
-            You don't have any roadmaps in this category. Browse paths to get
-            started.
+          <p className="font-bold text-[#111] mb-1">
+            {courses.length === 0 ? 'No courses available' : 'Nothing here yet'}
           </p>
-        <Link to="/dashboard/add-roadmap"
-          onClick={() => navigate("/add-roadmap")}
-          className="flex items-center gap-2 bg-[#111] text-white px-5 py-2.5 rounded-full"
-        >
-          + Add Roadmap
-        </Link>
+          <p className="text-sm text-[#A3A3A3] max-w-xs leading-relaxed">
+            {courses.length === 0
+              ? "You don't have any roadmaps yet. Add one to get started."
+              : 'You do not have any roadmaps in this category. Try a different tab or browse paths to get started.'}
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">

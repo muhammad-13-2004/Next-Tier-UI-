@@ -11,6 +11,13 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
     const doneCount =
       roadmap.completed_modules ?? modules.filter(m => m.status === "completed").length;
     const totalCount = roadmap.total_modules ?? modules.length;
+    const progress = Math.min(100, Math.max(0, Number(roadmap.progress) || 0));
+    const barColor =
+      roadmap.status === "completed"
+        ? "#10b981"
+        : roadmap.status === "not-started"
+        ? "#D4D4D4"
+        : roadmap.accentColor || "#7AE84A";
 
     if (modules.length === 0) {
         return (
@@ -18,7 +25,7 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                 <img
                     src={LoadingImage}
                     alt="Loading roadmap"
-                    className="w-16 h-16 object-contain"
+                    className="w-20 h-20 object-contain"
                     style={{ animation: 'pulse-scale 1.5s ease-in-out infinite' }}
                 />
                 <style>{`
@@ -30,8 +37,6 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
             </div>
         );
     }
-
-    console.log("Module data :", modules);
 
     return (
         <div className="min-h-screen">
@@ -52,20 +57,22 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                     <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight leading-tight mb-2">
                         {roadmap.title}
                     </h1>
-                    <p className="text-sm text-[#737373] max-w-xl leading-relaxed">{roadmap.subtitle}</p>
+                    <p className="text-sm text-[#737373] max-w-xl leading-relaxed">
+                        {roadmap.subtitle}
+                    </p>
                 </div>
 
                 {/* Progress */}
                 <div className="shrink-0 text-right">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-[#A3A3A3] mb-1">Overall Progress</p>
                     <p className="text-4xl font-extrabold text-[#111] leading-none">
-                        {roadmap.progress}<span className="text-2xl">%</span>
+                        {progress}<span className="text-2xl">%</span>
                         <TrendingUp size={18} className="inline ml-1 text-[#7AE84A]" />
                     </p>
                     <div className="w-40 h-1.5 bg-[#EBEBEB] rounded-full overflow-hidden mt-2 ml-auto">
                         <div
-                            className="h-full rounded-full"
-                            style={{ width: `${roadmap.progress}%`, background: roadmap.accentColor }}
+                            className="h-full rounded-full transition-all duration-700"
+                            style={{ width: `${progress}%`, background: barColor }}
                         />
                     </div>
                     <p className="text-xs text-[#A3A3A3] mt-1.5">{doneCount} of {totalCount} modules done</p>
