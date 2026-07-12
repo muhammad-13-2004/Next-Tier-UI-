@@ -8,20 +8,21 @@ const AiTutor = () => {
   const { messages, loading, error, sendMessage, clearChat, newChat } = useAiTutor();
 
   return (
-    <div className="flex flex-col h-[85vh] rounded-xl ">
-      
-      <ChatHeader onClear={clearChat} onNewChat={newChat} />
+    <div className="flex h-[calc(100vh-7rem)] min-h-0 flex-col overflow-hidden">
+      <div className="shrink-0 px-1 pt-1">
+        <ChatHeader onClear={clearChat} onNewChat={newChat} />
+      </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 pb-4 pt-1 space-y-4 overscroll-contain">
         {messages.length === 0 && <WelcomeCard />}
         <ChatMessages messages={messages} loading={loading} />
       </div>
 
-      {error && (
-        <p className="mx-auto w-[75%] text-sm text-red-500">{error}</p>
-      )}
+      {error && <p className="shrink-0 px-4 pb-2 text-sm text-red-500">{error}</p>}
 
-      <ChatInput onSend={sendMessage} disabled={loading} />
+      <div className="shrink-0 border-t border-[#F1F5F9] px-4 py-4">
+        <ChatInput onSend={sendMessage} disabled={loading} fullWidth />
+      </div>
     </div>
   );
 };

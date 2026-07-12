@@ -165,7 +165,7 @@ const AddRoadmap = () => {
           <img
             src={LoadingImage}
             alt="Loading"
-            className="w-24 h-24 object-contain"
+            className="w-20 h-20 object-contain"
             style={{ animation: "pulse-scale 1.5s ease-in-out infinite" }}
           />
           <p className="text-sm text-[#888]">
@@ -331,12 +331,12 @@ const AddRoadmap = () => {
           {/* Textarea */}
           <div className="border border-[#e5e5e5] focus-within:border-[#22c55e] rounded-xl bg-white overflow-hidden transition-colors">
             <div className="px-4 pt-3 pb-1">
-              <label className="text-xs font-semibold text-[#555]">What do you want to learn?</label>
+              <label className="text-xs font-semibold text-[#555]">What technical skill or field do you want to learn?</label>
             </div>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value.slice(0, 500))}
-              placeholder="e.g. I want to learn full stack web development with modern tools..."
+              placeholder="e.g. I want to learn full stack web development, data science, cybersecurity, or machine learning..."
               className="w-full px-4 pt-1 pb-2 text-sm text-[#111] placeholder:text-[#bbb] outline-none resize-none min-h-[90px] bg-transparent font-[inherit]"
             />
             <div className="text-right text-xs text-[#bbb] px-4 pb-3">

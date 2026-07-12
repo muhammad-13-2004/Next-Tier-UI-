@@ -34,7 +34,7 @@ export default function Boarding4({ recommendations, status, error, onRetry, onB
             <img
               src={LoadingImage}
               alt="Loading"
-              className="w-24 h-24 object-contain"
+              className="w-20 h-20 object-contain"
               style={{ animation: 'pulse-scale 1.5s ease-in-out infinite' }}
             />
           </div>

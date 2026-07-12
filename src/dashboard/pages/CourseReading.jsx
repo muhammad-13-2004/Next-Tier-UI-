@@ -214,12 +214,13 @@ export default function CourseReadingTab() {
         quiz_score: correct,
         xp_earned: Number(lesson?.xp_reward ?? 0),
       })
-      await refreshAfterLessonComplete(roadmap.slug, result?.course ?? null)
-      await loadDashboard({ force: true })
       setLessonCompleted(true)
+      setLessonCompleting(false)
+
+      void refreshAfterLessonComplete(roadmap.slug, result?.course ?? null)
+      void loadDashboard({ force: true })
     } catch {
       setLessonCompleted(false)
-    } finally {
       setLessonCompleting(false)
     }
   }

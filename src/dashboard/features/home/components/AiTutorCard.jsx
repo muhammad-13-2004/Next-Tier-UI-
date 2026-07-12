@@ -7,7 +7,7 @@ const AiTutorCard = () => {
     const navigate = useNavigate();
 
     return (
-      <div className="bg-(--background-color) rounded-3xl p-5">
+      <div className="bg-(--background-color) border border-(--subtext-color)/10 rounded-3xl p-5">
         
         <div className="flex items-center gap-2 mb-4">
           <img src={botIcon} className="w-8" />

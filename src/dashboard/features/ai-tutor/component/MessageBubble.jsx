@@ -6,7 +6,7 @@ const MessageBubble = ({ text, isUser, isLoading }) => {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
         className={`px-4 py-2 rounded-xl max-w-2xl text-sm flex items-start gap-2 whitespace-pre-line leading-relaxed
-        ${isUser ? 'bg-green-100' : 'bg-(--background-color) border'}`}
+        ${isUser ? 'bg-(--secondary-color)/80' : 'bg-(--background-color) border'}`}
       >
         {isLoading ? (
           <>

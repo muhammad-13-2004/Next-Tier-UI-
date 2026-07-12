@@ -18,7 +18,7 @@ const DashOverview = () => {
 
     <div className="space-y-8">
 
-      <div className="rounded-3xl bg-gradient-to-b from-(--background-color) to-(--secondary-color)/10 border border-(--primary-color)/6 px-8 py-12">
+      <div className="rounded-l-3xl rounded-r-3xl rounded-bl-none rounded-br-0 bg-linear-to-b from-(--secondary-color)/20 to-(--secondary-color)/0 px-10 py-12 mb-0">
 
         <div className="flex flex-col md:flex-row items-start justify-between md:items-center gap-6 md:gap-12">
 

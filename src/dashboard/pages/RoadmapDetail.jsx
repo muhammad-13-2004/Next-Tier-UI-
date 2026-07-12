@@ -25,7 +25,7 @@ const RoadmapDetail = ({ roadmap, onBack }) => {
                 <img
                     src={LoadingImage}
                     alt="Loading roadmap"
-                    className="w-16 h-16 object-contain"
+                    className="w-20 h-20 object-contain"
                     style={{ animation: 'pulse-scale 1.5s ease-in-out infinite' }}
                 />
                 <style>{`

@@ -18,7 +18,7 @@ const SetupCard = () => {
   if (isCompleted !== false) return null;
 
   return (
-    <div className="bg-(--primary-color) text-white rounded-3xl p-5">
+    <div className="bg-(--primary-color) border border-(--subtext-color)/10 text-white rounded-3xl p-5">
       <span className="text-xs bg-(--secondary-color)/30 px-3 py-1 rounded-full font-medium">
         PROFILE INCOMPLETE
       </span>

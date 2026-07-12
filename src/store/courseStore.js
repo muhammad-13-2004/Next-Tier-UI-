@@ -1,6 +1,51 @@
 import { create } from "zustand";
 import { api } from "@/services/api";
 
+const COURSE_CACHE_KEY = "nexttier.course-cache";
+const COURSE_CACHE_TTL_MS = 5 * 60 * 1000;
+
+const canUseStorage = () =>
+  typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+
+const readCourseCache = () => {
+  if (!canUseStorage()) return null;
+
+  try {
+    const raw = window.localStorage.getItem(COURSE_CACHE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const writeCourseCache = ({ courses = [], activeCourse = null }) => {
+  if (!canUseStorage()) return;
+
+  try {
+    window.localStorage.setItem(
+      COURSE_CACHE_KEY,
+      JSON.stringify({
+        courses,
+        activeCourse,
+        cachedAt: Date.now(),
+      })
+    );
+  } catch {
+    // Ignore cache write failures and keep the app working.
+  }
+};
+
+const isCacheFresh = (cachedAt) => {
+  const timestamp = Number(cachedAt);
+  if (!Number.isFinite(timestamp) || timestamp <= 0) return false;
+  return Date.now() - timestamp < COURSE_CACHE_TTL_MS;
+};
+
 const normalizeComplexity = (value) => {
   const normalized = String(value ?? "beginner").trim().toLowerCase();
   if (normalized === "beginner" || normalized === "intermediate" || normalized === "advanced") {
@@ -163,23 +208,84 @@ const extractCourseList = (payload) => {
   return [];
 };
 
+const courseMatchesId = (course, courseId) =>
+  String(course?.slug ?? course?.id ?? "") === String(courseId ?? "") ||
+  String(course?.id ?? "") === String(courseId ?? "");
+
+const getCachedCourse = (state, courseId) => {
+  const inState =
+    state.activeCourse && courseMatchesId(state.activeCourse, courseId)
+      ? state.activeCourse
+      : state.courses.find((course) => courseMatchesId(course, courseId));
+
+  if (inState?.modules?.length) return inState;
+
+  const cache = readCourseCache();
+  if (!cache) return null;
+
+  const cachedCourse =
+    Array.isArray(cache.courses) &&
+    cache.courses.find((course) => courseMatchesId(course, courseId));
+
+  if (cachedCourse?.modules?.length) return cachedCourse;
+
+  if (cache.activeCourse && courseMatchesId(cache.activeCourse, courseId)) {
+    return cache.activeCourse;
+  }
+
+  return null;
+};
+
 export const useCourseStore = create((set, get) => ({
 
-  courses:       [],   // all user roadmaps (for My Roadmaps tab)
-  activeCourse:  null, // currently open roadmap detail
+  courses:       readCourseCache()?.courses ?? [],   // all user roadmaps (for My Roadmaps tab)
+  activeCourse:  readCourseCache()?.activeCourse ?? null, // currently open roadmap detail
   generating:    false,
   loading:       false,
   error:         null,
+  coursesFetchedAt: readCourseCache()?.cachedAt ?? 0,
 
-  loadCourses: async () => {
+  loadCourses: async ({ force = false } = {}) => {
+    const currentState = get();
+    if (!force && currentState.courses.length > 0 && isCacheFresh(currentState.coursesFetchedAt)) {
+      return currentState.courses;
+    }
+
+    if (!force) {
+      const cached = readCourseCache();
+      if (cached?.courses?.length) {
+        set({
+          courses: cached.courses,
+          activeCourse: cached.activeCourse ?? currentState.activeCourse,
+          loading: false,
+          error: null,
+          coursesFetchedAt: cached.cachedAt ?? Date.now(),
+        });
+
+        if (isCacheFresh(cached.cachedAt)) {
+          return cached.courses;
+        }
+      }
+    }
+
     set({ loading: true, error: null });
     try {
       const response = await api.getCourses();
       const rawCourses = extractCourseList(response);
       const normalized = rawCourses.map(normalizeCourse).filter(Boolean);
-      set({ courses: normalized, loading: false });
+      set({
+        courses: normalized,
+        loading: false,
+        coursesFetchedAt: Date.now(),
+      });
+      writeCourseCache({
+        courses: normalized,
+        activeCourse: get().activeCourse,
+      });
+      return normalized;
     } catch (err) {
       set({ error: err.message, loading: false });
+      return get().courses;
     }
   },
 
@@ -225,6 +331,11 @@ export const useCourseStore = create((set, get) => ({
       };
     });
 
+    writeCourseCache({
+      courses: get().courses,
+      activeCourse: get().activeCourse,
+    });
+
     return incoming;
   },
 
@@ -256,6 +367,10 @@ export const useCourseStore = create((set, get) => ({
         activeCourse: course,
         generating: false,
       }));
+      writeCourseCache({
+        courses: get().courses,
+        activeCourse: get().activeCourse,
+      });
       return course;
     } catch (err) {
       set({ error: err.message, generating: false });
@@ -265,6 +380,24 @@ export const useCourseStore = create((set, get) => ({
 
   // Called when user opens a roadmap from My Roadmaps
   loadCourse: async (courseId) => {
+    const cachedCourse = getCachedCourse(get(), courseId);
+    if (cachedCourse) {
+      set((state) => ({
+        activeCourse: cachedCourse,
+        courses: [
+          cachedCourse,
+          ...state.courses.filter((course) => String(course.slug) !== String(cachedCourse.slug)),
+        ],
+        loading: false,
+        error: null,
+      }));
+      writeCourseCache({
+        courses: get().courses,
+        activeCourse: get().activeCourse,
+      });
+      return cachedCourse;
+    }
+
     set({ loading: true, error: null });
     try {
       const response = await api.getCoursebyId(courseId);
@@ -278,10 +411,22 @@ export const useCourseStore = create((set, get) => ({
         ],
         loading: false,
       }));
+      writeCourseCache({
+        courses: get().courses,
+        activeCourse: get().activeCourse,
+      });
+      return course;
     } catch (err) {
       set({ error: err.message, loading: false });
+      return null;
     }
   },
 
-  clearActive: () => set({ activeCourse: null }),
+  clearActive: () => {
+    set({ activeCourse: null });
+    writeCourseCache({
+      courses: get().courses,
+      activeCourse: null,
+    });
+  },
 }));

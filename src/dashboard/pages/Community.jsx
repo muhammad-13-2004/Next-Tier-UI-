@@ -17,7 +17,7 @@ const Community = () => {
     </div>
     <FilterBar />
     <p className="text-(--subtext-color) mt-1 opacity-70">
-        No course available! Generate your personalized roadmap from <Link to='/roadmap' className="text-lime-500 underline">here.</Link>
+        No course available! Generate your personalized roadmap from <Link to='/dashboard/roadmaps' className="text-lime-500 underline">here.</Link>
     </p>
     {/* <RoadmapGrid/> */}
     </>
